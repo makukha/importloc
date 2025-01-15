@@ -1,0 +1,5 @@
+[![versions](https://img.shields.io/pypi/pyversions/importloc.svg)](https://pypi.org/project/importloc)
+[![pypi](https://img.shields.io/pypi/v/importloc.svg#v0.1.0)](https://pypi.python.org/pypi/importloc)
+[![tested with multipython](https://img.shields.io/badge/tested_with-multipython-x)](https://github.com/makukha/multipython)
+[![using docsub](https://img.shields.io/badge/using-docsub-royalblue)](https://github.com/makukha/docsub)
+[![license](https://img.shields.io/github/license/makukha/importloc.svg)](https://github.com/makukha/importloc/blob/main/LICENSE)

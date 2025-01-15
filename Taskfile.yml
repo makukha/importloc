@@ -1,0 +1,96 @@
+version: '3'
+
+vars:
+  TESTING_IMG: makukha/multipython:latest
+
+tasks:
+
+  init:
+    desc: Init local dev environment.
+    cmds:
+      - uv sync
+
+  news:
+    desc: Show available news categories.
+    cmds:
+      - yq '.tool.towncrier.type[].name' -oj -r pyproject.toml
+
+  news:*:
+    desc: Create news item in category.
+    vars:
+      SECTION: '{{index .MATCH 0}}'
+      ISSUE: {sh: git rev-parse --abbrev-ref HEAD | cut -d- -f1}
+      MSG: {sh: "git rev-parse --abbrev-ref HEAD | sed 's/^[0-9][0-9]*-//' | uv run caseutil -csentence"}
+    cmds:
+      - uv run towncrier create -c '{{coalesce .CLI_ARGS .MSG}}' "{{.ISSUE}}.{{.SECTION}}.md"
+
+  lint:
+    desc: Run linters.
+    cmds:
+      - uv run mypy src tests
+      - uv run ruff check
+      - uv run ruff format --check
+
+  test:
+    desc: Run tests.
+    vars:
+      NAME: {sh: 'basename {{.ROOT_DIR}}'}
+      VER: {sh: uv run bump-my-version show -fjson | jq -r .current_version}
+    cmds:
+      - task: build
+      - docker run --rm -it -v .:/src -w /src {{.TESTING_IMG}}
+          tox run-parallel --installpkg dist/{{.NAME}}-{{.VER}}-py3-none-any.whl
+
+  testshell:
+    desc: Shell to testing environment.
+    cmds:
+      - docker run --rm -it -v .:/src -w /src {{.TESTING_IMG}}
+
+  build:
+    desc: Build package.
+    cmds:
+      - uv lock
+      - rm -rf dist
+      - uv build
+
+  docs:
+    desc: Update docs.
+    cmds:
+      - cd docs && uv run sphinx-build -b html . _build
+      - uv run docsub apply -i README.md
+
+  #
+  #  RELEASE
+  # ---------
+  #
+  # > task lint
+  # > task test
+  # > task docs
+  #
+  # > task release:version -- [patch|minor|major]
+  # > task release:changelog
+  # > (proofread changelog)
+  # > task docs
+  #
+  # > task build
+  # > task release:publish
+  #
+
+  release:version:
+    desc: Bump release version.
+    cmds:
+      - uv run bump-my-version bump -- {{.CLI_ARGS}}
+      - uv lock
+
+  release:changelog:
+    desc: Collect changelog entries.
+    vars:
+      VERSION: {sh: uv run bump-my-version show current_version 2>/dev/null}
+    cmds:
+      - uv run towncrier build --yes --version "{{.VERSION}}"
+
+  release:publish:
+    desc: Publish package on PyPI.
+    cmds:
+      - task: build
+      - uv publish

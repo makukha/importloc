@@ -1,0 +1,4 @@
+>>> from importloc import *
+>>> baz = object_from_module('example.foobar:baz')
+>>> baz
+<function baz at 0x...>

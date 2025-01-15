@@ -1,0 +1,114 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "importloc"
+description = "Import Python objects from arbitrary locations"
+license = {text = "MIT"}
+readme = "README.md"
+urls.Documentation = "https://importloc.readthedocs.io"
+urls.Homepage = "https://github.com/makukha/importloc"
+urls.Repository = "https://github.com/makukha/importloc"
+urls.Issues = "https://github.com/makukha/importloc/issues"
+urls.Changelog = "https://github.com/makukha/importloc/releases"
+keywords = ["import", "import-module", "import-string", "import-object", "python"]
+classifiers = [
+  # see https://pypi.org/classifiers/
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Documentation",
+  "Topic :: Software Development",
+  "Topic :: Software Development :: Libraries",
+  "Typing :: Typed",
+]
+
+dynamic = ["version"]
+
+requires-python = ">=3.9"
+dependencies = []
+
+[dependency-groups]
+dev = [
+  "caseutil; python_version>='3.13'",
+  "mypy; python_version>='3.13'",
+  "ruff; python_version>='3.13'",
+  # docs
+  "docsub; python_version>='3.13'",
+  "furo; python_version>='3.13'",
+  "myst-parser; python_version>='3.13'",
+  "sphinx; python_version>='3.13'",
+  # tests
+  "pytest~=8.3; python_version>='3.13'",
+  "pytest-cov~=6.0; python_version>='3.13'",
+  "pytest-sugar~=1.0; python_version>='3.13'",
+  # release
+  "bump-my-version; python_version>='3.13'",
+  "towncrier; python_version>='3.13'",
+]
+
+# bump-my-version
+
+[tool.bumpversion]
+current_version = "0.1.0"
+allow_dirty = true
+files = [
+  {filename = "docs/parts/badges.md"},
+  {filename = "docs/conf.py"},
+  {filename = "src/importloc/__init__.py"},
+]
+
+# hatch
+
+[tool.hatch.version]
+path = "src/importloc/__init__.py"
+
+# ruff
+
+[tool.ruff]
+target-version = "py313"
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "B", "S"]
+per-file-ignores."tests/**/*.py" = [
+  "S101",  # Use of `assert` detected
+]
+[tool.ruff.format]
+quote-style = "single"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+# towncrier
+
+[tool.towncrier]
+directory = "NEWS.d"
+filename = "CHANGELOG.md"
+title_format = "## [v{version}](https://github.com/makukha/importloc/releases/tag/v{version}) — {project_date}"
+issue_format = "[#{issue}](https://github.com/makukha/importloc/issues/{issue})"
+type = [
+  {name = "Security ⚠️", directory = "security", showcontent = true},
+  {name = "Breaking 🔥", directory = "breaking", showcontent = true},
+  {name = "Removed 💨", directory = "removed", showcontent = true},
+  {name = "Deprecated ❄️", directory = "deprecated", showcontent = true},
+  {name = "Added 🌿", directory = "added", showcontent = true},
+  {name = "Changed", directory = "changed", showcontent = true},
+  {name = "Fixed", directory = "fixed", showcontent = true},
+  {name = "Docs", directory = "docs", showcontent = true},
+  {name = "Misc", directory = "misc", showcontent = true},
+]
+
+# uv
+
+[tool.uv]
+package = true
