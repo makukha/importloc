@@ -162,6 +162,7 @@ def object_from_module(modspec: str) -> Any:
 
 # helpers
 
+
 def validate_identifier(name: str) -> None:
     for part in name.split('.'):
         if not part.isidentifier():
