@@ -43,13 +43,9 @@ dependencies = []
 [dependency-groups]
 dev = [
   "caseutil; python_version>='3.13'",
+  "docsub; python_version>='3.13'",
   "mypy; python_version>='3.13'",
   "ruff; python_version>='3.13'",
-  # docs
-  "docsub; python_version>='3.13'",
-  "furo; python_version>='3.13'",
-  "myst-parser; python_version>='3.13'",
-  "sphinx; python_version>='3.13'",
   # tests
   "pytest~=8.3; python_version>='3.13'",
   "pytest-cov~=6.0; python_version>='3.13'",
@@ -57,6 +53,11 @@ dev = [
   # release
   "bump-my-version; python_version>='3.13'",
   "towncrier; python_version>='3.13'",
+]
+docs = [
+  "furo; python_version>='3.13'",
+  "myst-parser; python_version>='3.13'",
+  "sphinx; python_version>='3.13'",
 ]
 
 # bump-my-version

@@ -353,15 +353,17 @@ dev = [
     { name = "bump-my-version", marker = "python_full_version >= '3.13'" },
     { name = "caseutil", marker = "python_full_version >= '3.13'" },
     { name = "docsub", marker = "python_full_version >= '3.13'" },
-    { name = "furo", marker = "python_full_version >= '3.13'" },
     { name = "mypy", marker = "python_full_version >= '3.13'" },
-    { name = "myst-parser", marker = "python_full_version >= '3.13'" },
     { name = "pytest", marker = "python_full_version >= '3.13'" },
     { name = "pytest-cov", marker = "python_full_version >= '3.13'" },
     { name = "pytest-sugar", marker = "python_full_version >= '3.13'" },
     { name = "ruff", marker = "python_full_version >= '3.13'" },
-    { name = "sphinx", marker = "python_full_version >= '3.13'" },
     { name = "towncrier", marker = "python_full_version >= '3.13'" },
+]
+docs = [
+    { name = "furo", marker = "python_full_version >= '3.13'" },
+    { name = "myst-parser", marker = "python_full_version >= '3.13'" },
+    { name = "sphinx", marker = "python_full_version >= '3.13'" },
 ]
 
 [package.metadata]
@@ -371,15 +373,17 @@ dev = [
     { name = "bump-my-version", marker = "python_full_version >= '3.13'" },
     { name = "caseutil", marker = "python_full_version >= '3.13'" },
     { name = "docsub", marker = "python_full_version >= '3.13'" },
-    { name = "furo", marker = "python_full_version >= '3.13'" },
     { name = "mypy", marker = "python_full_version >= '3.13'" },
-    { name = "myst-parser", marker = "python_full_version >= '3.13'" },
     { name = "pytest", marker = "python_full_version >= '3.13'", specifier = "~=8.3" },
     { name = "pytest-cov", marker = "python_full_version >= '3.13'", specifier = "~=6.0" },
     { name = "pytest-sugar", marker = "python_full_version >= '3.13'", specifier = "~=1.0" },
     { name = "ruff", marker = "python_full_version >= '3.13'" },
-    { name = "sphinx", marker = "python_full_version >= '3.13'" },
     { name = "towncrier", marker = "python_full_version >= '3.13'" },
+]
+docs = [
+    { name = "furo", marker = "python_full_version >= '3.13'" },
+    { name = "myst-parser", marker = "python_full_version >= '3.13'" },
+    { name = "sphinx", marker = "python_full_version >= '3.13'" },
 ]
 
 [[package]]

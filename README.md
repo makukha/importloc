@@ -17,6 +17,8 @@
 * Import object from file `path/to/file.py:object[.attr...]`
 * Import object from module `[...package.]module:object[.attr...]`
 * No dependencies
+* 100% test coverage *(to be implemented)*
+* [Detailed documentation](http://importloc.readthedocs.io)
 
 
 # Installation
@@ -29,8 +31,6 @@ $ pip install importloc
 
 
 # Usage
-
-For more details, [read the docs](http://importloc.readthedocs.io).
 
 ## [module_from_file](https://importloc.readthedocs.io/en/latest/#importloc.module_from_file)
 
