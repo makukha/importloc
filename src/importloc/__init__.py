@@ -39,8 +39,8 @@ def module_from_file(
     :raises ValueError: when ``modname`` can't be a module identifier
     :raises FileNotFoundError: when ``path`` does not exist
     :raises IsADirectoryError: when ``path`` is a directory
-    :raises RuntimeErrorError: when ``modname`` is already imported
-        and ``exist_ok`` is ``False``
+    :raises RuntimeError: when ``modname`` is already imported and ``exist_ok``
+        is ``False``
 
     :return: Imported module object.
     """
@@ -106,8 +106,8 @@ def object_from_file(
     :raises FileNotFoundError: when ``path/to/file`` does not exist
     :raises IsADirectoryError: when ``path/to/file`` is a directory
     :raises ImportError: when ``object`` is not defined in file
-    :raises RuntimeErrorError: when ``modname`` is already imported
-        and ``exist_ok`` is ``False``
+    :raises RuntimeError: when ``modname`` is already imported and ``exist_ok``
+        is ``False``
 
     :return: Imported object.
     """
