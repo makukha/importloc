@@ -62,10 +62,10 @@ dev = [
 # bump-my-version
 
 [tool.bumpversion]
-current_version = "0.0.0"
+current_version = "0.1.0"
 allow_dirty = true
 files = [
-  {filename = "docs/badges.md"},
+  {filename = "docs/parts/badges.md"},
   {filename = "docs/conf.py"},
   {filename = "src/importloc/__init__.py"},
 ]

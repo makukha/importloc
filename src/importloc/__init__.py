@@ -5,7 +5,7 @@ from types import ModuleType
 from typing import Any, Union
 
 
-__version__ = '0.0.0'
+__version__ = '0.1.0'
 __all__ = [
     'module_from_file',
     'object_from_file',
