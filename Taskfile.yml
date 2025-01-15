@@ -56,6 +56,7 @@ tasks:
   docs:
     desc: Update docs.
     cmds:
+      - uv export --group docs --no-group dev --no-emit-project > docs/requirements.txt
       - cd docs && uv run sphinx-build -b html . _build
       - uv run docsub apply -i README.md
 
