@@ -1,0 +1,7 @@
+_build/
+build/
+dist/
+__pycache__/
+.python-version
+.tox/
+.venv/
