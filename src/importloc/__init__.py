@@ -2,7 +2,7 @@ import importlib.util
 from pathlib import Path
 import sys
 from types import ModuleType
-from typing import Any
+from typing import Any, Union
 
 
 __version__ = '0.0.0'
@@ -14,8 +14,8 @@ __all__ = [
 
 
 def module_from_file(
-    path: str | Path,
-    modname: str | None = None,
+    path: Union[str, Path],
+    modname: Union[str, None] = None,
     exist_ok: bool = False,
 ) -> ModuleType:
     """
@@ -79,7 +79,7 @@ def module_from_file(
 
 def object_from_file(
     pathspec: str,
-    modname: str | None = None,
+    modname: Union[str, None] = None,
     exist_ok: bool = False,
 ) -> Any:
     """
