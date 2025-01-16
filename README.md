@@ -41,7 +41,7 @@ $ pip install importloc
 >>> from importloc import *
 >>> foobar = module_from_file('example/foobar.py')
 >>> foobar
-<module 'foobar' from ...example/foobar.py'>
+<module 'foobar' from '/.../example/foobar.py'>
 ```
 <!-- docsub: end -->
 

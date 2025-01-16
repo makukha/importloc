@@ -36,7 +36,9 @@ Installation
 API Reference
 -------------
 
->>> from importloc import *
+.. code-block:: python
+
+    from importloc import *
 
 .. automodule:: importloc
     :members:
