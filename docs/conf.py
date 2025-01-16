@@ -20,6 +20,7 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.viewcode',
 ]
 
 # autodoc
