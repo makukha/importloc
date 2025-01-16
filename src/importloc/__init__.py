@@ -49,6 +49,7 @@ def module_from_file(
     # prepare path
     if isinstance(path, str):
         path = Path(path)
+    path = path.resolve()
 
     # validate path
     if not path.exists():
