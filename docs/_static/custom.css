@@ -1,3 +1,8 @@
+dl.function {
+    margin-block-start: 2em;
+    margin-block-end: 2em;
+}
+
 table.autosummary {
     margin-left: 0;
     margin-right: auto;
