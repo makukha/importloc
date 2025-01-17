@@ -58,6 +58,7 @@ docs = [
   "furo; python_version>='3.13'",
   "myst-parser; python_version>='3.13'",
   "sphinx; python_version>='3.13'",
+  "sphinx-sitemap; python_version>='3.13'",
 ]
 
 # bump-my-version
