@@ -5,7 +5,7 @@ from types import ModuleType
 from typing import Any, Union
 
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 __all__ = [
     'module_from_file',
     'object_from_file',
@@ -44,7 +44,7 @@ def module_from_file(
 
     :return: Imported module object.
 
-    .. versionadded:: 0.1.0
+    .. versionadded:: 0.1.1
     """
     # todo: validate types
 
@@ -114,7 +114,7 @@ def object_from_file(
 
     :return: Imported object.
 
-    .. versionadded:: 0.1.0
+    .. versionadded:: 0.1.1
     """
     # todo: validate types
 
@@ -150,7 +150,7 @@ def object_from_module(modspec: str) -> Any:
 
     :return: Imported object.
 
-    .. versionadded:: 0.1.0
+    .. versionadded:: 0.1.1
     """
     # todo: validate types
 
