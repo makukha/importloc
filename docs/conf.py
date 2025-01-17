@@ -21,6 +21,7 @@ extensions = [
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
+    'sphinx_sitemap',
 ]
 
 # autodoc
@@ -39,6 +40,7 @@ intersphinx_mapping = {
 
 # html
 
+html_baseurl = f'https://{project}.readthedocs.io/en/latest/'
 html_theme = 'furo'
 html_title = f'{project} {release}'
 language = 'en'
