@@ -43,6 +43,8 @@ def module_from_file(
         is ``False``
 
     :return: Imported module object.
+
+    .. versionadded:: 0.1.0
     """
     # todo: validate types
 
@@ -111,6 +113,8 @@ def object_from_file(
         is ``False``
 
     :return: Imported object.
+
+    .. versionadded:: 0.1.0
     """
     # todo: validate types
 
@@ -145,6 +149,8 @@ def object_from_module(modspec: str) -> Any:
     :raises ImportError: when ``object`` is not defined in ``package.module``
 
     :return: Imported object.
+
+    .. versionadded:: 0.1.0
     """
     # todo: validate types
 
