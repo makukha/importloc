@@ -7,6 +7,17 @@ All notable changes to this project will be documented in this file. Changes for
 
 <!-- towncrier release notes start -->
 
+## [v0.2.0](https://github.com/makukha/importloc/releases/tag/v0.2.0) — 2025-01-18
+
+***Breaking 🔥***
+
+- Completely rethink naming ([#20](https://github.com/makukha/importloc/issues/20))
+
+***Fixed:***
+
+- Wrong exception type raised when module is already imported
+
+
 ## [v0.1.1](https://github.com/makukha/importloc/releases/tag/v0.1.1) — 2025-01-17
 
 ***Changed:***

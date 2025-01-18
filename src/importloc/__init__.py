@@ -46,6 +46,7 @@ def import_module_from_file(
     :return: Imported module object.
 
     .. versionadded:: 0.1.1
+    .. versionchanged:: 0.2.0 Renamed function and args
     """
     # todo: validate types
 
@@ -68,7 +69,7 @@ def import_module_from_file(
     if not mod_name.isidentifier():
         raise ValueError(f'"{mod_name}" is not a valid identifier.')
     elif mod_name in sys.modules and not replace:
-        raise ValueError(f'Module "{mod_name}" already imported.')
+        raise RuntimeError(f'Module "{mod_name}" already imported.')
 
     # import
     spec = importlib.util.spec_from_file_location(mod_name, path)
@@ -115,6 +116,7 @@ def import_object_from_file(
     :return: Imported object.
 
     .. versionadded:: 0.1.1
+    .. versionchanged:: 0.2.0 Renamed function and args
     """
     # todo: validate types
 
@@ -160,6 +162,7 @@ def import_object_from_module(mod_spec: str, replace: bool = False) -> Any:
     :return: Imported object.
 
     .. versionadded:: 0.1.1
+    .. versionchanged:: 0.2.0 Renamed function and args, added ``replace`` arg
     """
     # todo: validate types
 
@@ -174,7 +177,7 @@ def import_object_from_module(mod_spec: str, replace: bool = False) -> Any:
     # validate module
     validate_identifier(mod_name)
     if mod_name in sys.modules and not replace:
-        raise ValueError(f'Module "{mod_name}" already imported.')
+        raise RuntimeError(f'Module "{mod_name}" already imported.')
 
     # validate object
     validate_identifier(obj_name)
