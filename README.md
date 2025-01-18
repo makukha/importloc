@@ -14,8 +14,8 @@
 # Features
 
 * Import module from file `path/to/file.py`
-* Import object from file `path/to/file.py:object[.attr...]`
-* Import object from module `[...package.]module:object[.attr...]`
+* Import object from file `path/to/file.py:[parent.[...].]object`
+* Import object from module `[pkg.[...].]module:[parent.[...].]object`
 * No dependencies
 * 100% test coverage *(to be implemented)*
 * [Detailed documentation](http://importloc.readthedocs.io)
@@ -32,40 +32,40 @@ $ pip install importloc
 
 # Usage
 
-## [module_from_file](https://importloc.readthedocs.io/en/latest/#importloc.module_from_file)
+## [import_module_from_file](https://importloc.readthedocs.io/en/latest/#importloc.import_module_from_file)
 
 <!-- docsub: begin -->
 <!-- docsub: include tests/test_module_from_file.txt -->
 <!-- docsub: lines after 1 upto -1 -->
 ```doctest
 >>> from importloc import *
->>> foobar = module_from_file('example/foobar.py')
+>>> foobar = import_module_from_file('example/foobar.py')
 >>> foobar
 <module 'foobar' from '/.../example/foobar.py'>
 ```
 <!-- docsub: end -->
 
-## [object_from_file](https://importloc.readthedocs.io/en/latest/#importloc.object_from_file)
+## [import_object_from_file](https://importloc.readthedocs.io/en/latest/#importloc.import_object_from_file)
 
 <!-- docsub: begin -->
 <!-- docsub: include tests/test_object_from_file.txt -->
 <!-- docsub: lines after 1 upto -1 -->
 ```doctest
 >>> from importloc import *
->>> baz = object_from_file('example/foobar.py:baz')
+>>> baz = import_object_from_file('example/foobar.py:baz')
 >>> baz
 <function baz at 0x...>
 ```
 <!-- docsub: end -->
 
-## [object_from_module](https://importloc.readthedocs.io/en/latest/#importloc.object_from_module)
+## [import_object_from_module](https://importloc.readthedocs.io/en/latest/#importloc.import_object_from_module)
 
 <!-- docsub: begin -->
 <!-- docsub: include tests/test_object_from_module.txt -->
 <!-- docsub: lines after 1 upto -1 -->
 ```doctest
 >>> from importloc import *
->>> baz = object_from_module('example.foobar:baz')
+>>> baz = import_object_from_module('example.foobar:baz')
 >>> baz
 <function baz at 0x...>
 ```

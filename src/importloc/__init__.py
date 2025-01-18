@@ -4,42 +4,43 @@ import sys
 from types import ModuleType
 from typing import Any, Union
 
+from .__version__ import __version__
 
-__version__ = '0.1.1'
 __all__ = [
-    'module_from_file',
-    'object_from_file',
-    'object_from_module',
+    '__version__',
+    'import_module_from_file',
+    'import_object_from_file',
+    'import_object_from_module',
 ]
 
 
-def module_from_file(
+def import_module_from_file(
     path: Union[str, Path],
-    modname: Union[str, None] = None,
-    exist_ok: bool = False,
+    mod_name: Union[str, None] = None,
+    replace: bool = False,
 ) -> ModuleType:
     """
-    Create module from file.
+    Create module from ``path/to/file.py``
 
-    >>> foobar = module_from_file('example/foobar.py')
+    >>> foobar = import_module_from_file('example/foobar.py')
     >>> foobar
     <module 'foobar' from '.../example/foobar.py'>
 
     :param path:
         path to import as module
 
-    :param modname:
+    :param mod_name:
         name to assign to module created, defaults to ``path`` stem
 
-    :param exist_ok:
-        if module ``modname`` already imported and ``exist_ok`` is ``True``,
+    :param replace:
+        if module ``mod_name`` is already imported and ``replace`` is ``True``,
         overwrite it, otherwise raise ``RuntimeError``
 
     :raises TypeError: when passed arguments of wrong type
-    :raises ValueError: when ``modname`` can't be a module identifier
+    :raises ValueError: when ``mod_name`` can't be a module identifier
     :raises FileNotFoundError: when ``path`` does not exist
     :raises IsADirectoryError: when ``path`` is a directory
-    :raises RuntimeError: when ``modname`` is already imported and ``exist_ok``
+    :raises RuntimeError: when ``mod_name`` is already imported and ``replace``
         is ``False``
 
     :return: Imported module object.
@@ -59,57 +60,56 @@ def module_from_file(
     elif path.is_dir():
         raise IsADirectoryError(f'Path "{path}" is a directory.')
 
-    # prepare modname
-    if modname is None:
-        modname = path.stem
+    # prepare mod_name
+    if mod_name is None:
+        mod_name = path.stem
 
-    # validate modname
-    if not modname.isidentifier():
-        raise ValueError(f'"{modname}" is not a valid identifier.')
-    elif modname in sys.modules and not exist_ok:
-        raise ValueError(f'Module "{modname}" already imported.')
+    # validate mod_name
+    if not mod_name.isidentifier():
+        raise ValueError(f'"{mod_name}" is not a valid identifier.')
+    elif mod_name in sys.modules and not replace:
+        raise ValueError(f'Module "{mod_name}" already imported.')
 
     # import
-    spec = importlib.util.spec_from_file_location(modname, path)
+    spec = importlib.util.spec_from_file_location(mod_name, path)
     if spec is None or spec.loader is None:
-        raise ImportError(f'Module "{modname}" cannot be imported.')
+        raise ImportError(f'Module "{mod_name}" cannot be imported.')
     mod_obj = importlib.util.module_from_spec(spec)
-    sys.modules[modname] = mod_obj
+    sys.modules[mod_name] = mod_obj
     spec.loader.exec_module(mod_obj)
-
     return mod_obj
 
 
-def object_from_file(
-    pathspec: str,
-    modname: Union[str, None] = None,
-    exist_ok: bool = False,
+def import_object_from_file(
+    path_spec: str,
+    mod_name: Union[str, None] = None,
+    replace: bool = False,
 ) -> Any:
     """
-    Load object from file.
+    Load object from ``path/to/file.py:[parent.[...].]object``
 
-    >>> baz = object_from_file('example/foobar.py:baz')
+    >>> baz = import_object_from_file('example/foobar.py:baz')
     >>> baz
     <function baz at 0x...>
 
-    :param pathspec:
-        import string in format ``path/to/file.py:object[.attr...]``
+    :param path_spec:
+        import string in format ``path/to/file.py:[parent.[...].]object``
 
-    :param modname:
+    :param mod_name:
         name to assign to module created, defaults to ``path`` stem
 
-    :param exist_ok:
-        if module ``modname`` already imported and ``exist_ok`` is ``True``,
+    :param replace:
+        if module ``mod_name`` is already imported and ``replace`` is ``True``,
         overwrite it, otherwise raise ``RuntimeError``
 
     :raises TypeError: when passed arguments of wrong type
-    :raises ValueError: when ``pathspec`` is incorrect
-    :raises ValueError: when ``modname`` can't be a module identifier
+    :raises ValueError: when ``path_spec`` is incorrect
+    :raises ValueError: when ``mod_name`` can't be a module identifier
     :raises ValueError: when ``object`` is not a valid identifier
     :raises FileNotFoundError: when ``path/to/file`` does not exist
     :raises IsADirectoryError: when ``path/to/file`` is a directory
     :raises ImportError: when ``object`` is not defined in file
-    :raises RuntimeError: when ``modname`` is already imported and ``exist_ok``
+    :raises RuntimeError: when ``mod_name`` is already imported and ``replace``
         is ``False``
 
     :return: Imported object.
@@ -118,35 +118,44 @@ def object_from_file(
     """
     # todo: validate types
 
-    # parse pathspec
-    path, _, objname = pathspec.partition(':')
-    if not path or not objname:
+    # parse path_spec
+    path, _, obj_name = path_spec.partition(':')
+    if not path or not obj_name:
         raise ValueError(
-            f'Import string "{pathspec}" '
+            f'Import string "{path_spec}" '
             'must be in format "path/to/file.py:object[.attr...]".'
         )
 
-    validate_identifier(objname)
-    mod_obj = module_from_file(path, modname=modname, exist_ok=exist_ok)
-    return get_nested_object(mod_obj, objname)
+    # validate object
+    validate_identifier(obj_name)
+
+    # import
+    mod_obj = import_module_from_file(path, mod_name=mod_name, replace=replace)
+    return get_nested_object(mod_obj, obj_name)
 
 
-def object_from_module(modspec: str) -> Any:
+def import_object_from_module(mod_spec: str, replace: bool = False) -> Any:
     """
-    Load object from module.
+    Load object from ``[pkg.[...].]module:[parent.[...].]object``
 
-    >>> baz = object_from_module('example.foobar:baz')
+    >>> baz = import_object_from_module('example.foobar:baz')
     >>> baz
     <function baz at 0x...>
 
-    :param modspec:
-        import string in format ``[...package.]module:object[.attr...]``
+    :param mod_spec:
+        import string in format ``[pkg.[...].]module:[parent.[...].]object``
+
+    :param replace:
+        if ``module`` is already imported and ``replace`` is ``True``,
+        overwrite it, otherwise raise ``RuntimeError``
 
     :raises TypeError: when passed arguments of wrong type
-    :raises ValueError: when ``modspec`` is incorrect
+    :raises ValueError: when ``mod_spec`` is incorrect
     :raises ValueError: when ``object`` is not a valid identifier
-    :raises ImportError: when ``package.module`` cannot be imported
-    :raises ImportError: when ``object`` is not defined in ``package.module``
+    :raises ImportError: when ``module`` cannot be imported
+    :raises ImportError: when ``object`` is not defined in ``module``
+    :raises RuntimeError: when ``module`` is already imported and ``replace``
+        is ``False``
 
     :return: Imported object.
 
@@ -154,17 +163,25 @@ def object_from_module(modspec: str) -> Any:
     """
     # todo: validate types
 
-    # parse modspec
-    modname, _, objname = modspec.partition(':')
-    if not modname or not objname:
+    # parse mod_spec
+    mod_name, _, obj_name = mod_spec.partition(':')
+    if not mod_name or not obj_name:
         raise ValueError(
-            f'Import string "{modspec}" must be in format '
+            f'Import string "{mod_spec}" must be in format '
             '"[...package.]module:object[.attr...]".'
         )
 
-    validate_identifier(objname)
-    mod_obj = importlib.import_module(modname)  # todo: add test modname in sys.modules
-    return get_nested_object(mod_obj, objname)
+    # validate module
+    validate_identifier(mod_name)
+    if mod_name in sys.modules and not replace:
+        raise ValueError(f'Module "{mod_name}" already imported.')
+
+    # validate object
+    validate_identifier(obj_name)
+
+    # import
+    mod_obj = importlib.import_module(mod_name)
+    return get_nested_object(mod_obj, obj_name)
 
 
 # helpers

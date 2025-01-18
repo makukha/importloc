@@ -20,10 +20,11 @@ Functions
 .. currentmodule:: importloc
 
 .. autosummary::
+    :nosignatures:
 
-    module_from_file
-    object_from_file
-    object_from_module
+    import_module_from_file
+    import_object_from_file
+    import_object_from_module
 
 
 Installation
