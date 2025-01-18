@@ -25,7 +25,7 @@ extensions = [
 ]
 
 # autodoc
-autodoc_typehints = 'description'
+autodoc_typehints = 'both'
 
 # extlinks
 extlinks = {

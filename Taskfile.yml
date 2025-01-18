@@ -33,13 +33,10 @@ tasks:
 
   test:
     desc: Run tests.
-    vars:
-      NAME: {sh: 'basename {{.ROOT_DIR}}'}
-      VER: {sh: uv run bump-my-version show -fjson | jq -r .current_version}
     cmds:
       - task: build
       - docker run --rm -it -v .:/src -w /src {{.TESTING_IMG}}
-          tox run-parallel --installpkg dist/{{.NAME}}-{{.VER}}-py3-none-any.whl
+          tox run-parallel --installpkg "$(find dist -name '*.whl')"
 
   testshell:
     desc: Shell to testing environment.

@@ -69,13 +69,13 @@ allow_dirty = true
 files = [
   {filename = "docs/parts/badges.md"},
   {filename = "docs/conf.py"},
-  {filename = "src/importloc/__init__.py"},
+  {filename = "src/importloc/__version__.py"},
 ]
 
 # hatch
 
 [tool.hatch.version]
-path = "src/importloc/__init__.py"
+path = "src/importloc/__version__.py"
 
 # ruff
 
