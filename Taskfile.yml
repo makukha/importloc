@@ -74,6 +74,7 @@ tasks:
   #
   # > task build
   # > task release:publish
+  # > (create GitHub release)
   #
 
   release:version:
