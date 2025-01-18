@@ -67,6 +67,7 @@ tasks:
   # > task docs
   #
   # > task release:version -- [patch|minor|major]
+  # > (update "..version" history in docstrings)
   # > task release:changelog
   # > (proofread changelog)
   # > task docs
