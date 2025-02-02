@@ -16,9 +16,9 @@ init:
     #!/usr/bin/env bash
     set -euo pipefail
     sudo port install gh uv
-    @just sync
+    just sync
     # install pre-commit hook
-    echo "#!/usr/bin/env bash\njust pre-commit" > .git/hooks/pre-commit
+    echo -e "#!/usr/bin/env bash\njust pre-commit" > .git/hooks/pre-commit
     chmod a+x .git/hooks/pre-commit
 
 
