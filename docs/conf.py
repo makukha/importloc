@@ -11,7 +11,6 @@ release = '0.2.0'
 
 # general
 templates_path = ['_templates']
-exclude_patterns = []
 extensions = [
     'myst_parser',
     'sphinx.ext.autodoc',

@@ -1,4 +1,4 @@
 >>> from importloc import *
->>> baz = import_object_from_file('example/foobar.py:baz')
+>>> baz = import_object_from_file('example/foobar.py:baz', replace=True)
 >>> baz
 <function baz at 0x...>

@@ -34,7 +34,6 @@ classifiers = [
   "Topic :: Software Development :: Libraries",
   "Typing :: Typed",
 ]
-
 dynamic = ["version"]
 
 requires-python = ">=3.9"
@@ -42,23 +41,19 @@ dependencies = []
 
 [dependency-groups]
 dev = [
-  "caseutil; python_version>='3.13'",
-  "docsub; python_version>='3.13'",
-  "mypy; python_version>='3.13'",
-  "ruff; python_version>='3.13'",
-  # tests
-  "pytest~=8.3; python_version>='3.13'",
-  "pytest-cov~=6.0; python_version>='3.13'",
-  "pytest-sugar~=1.0; python_version>='3.13'",
-  # release
-  "bump-my-version; python_version>='3.13'",
-  "towncrier; python_version>='3.13'",
+  "bump-my-version; python_version>='3.12'",
+  "docsub; python_version>='3.12'",
+  "genbadge[tests,coverage]>=1.1; python_version>='3.12'",
+  "mypy; python_version>='3.12'",
+  "pytest>=8.3; python_version>='3.12'",
+  "ruff; python_version>='3.12'",
+  "towncrier; python_version>='3.12'",
 ]
 docs = [
-  "furo; python_version>='3.13'",
-  "myst-parser; python_version>='3.13'",
-  "sphinx; python_version>='3.13'",
-  "sphinx-sitemap; python_version>='3.13'",
+  "furo; python_version>='3.12'",
+  "myst-parser; python_version>='3.12'",
+  "sphinx; python_version>='3.12'",
+  "sphinx-sitemap; python_version>='3.12'",
 ]
 
 # bump-my-version

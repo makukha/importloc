@@ -1,7 +1,9 @@
 _build/
 build/
+.coverage
 dist/
 __pycache__/
 .python-version
+.tmp/
 .tox/
 .venv/

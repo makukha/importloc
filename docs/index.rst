@@ -12,6 +12,7 @@ importloc
     :hidden:
 
     changelog
+    other
 
 
 Functions

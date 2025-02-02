@@ -3,11 +3,13 @@
 
 <!-- docsub: begin -->
 <!-- docsub: include docs/parts/badges.md -->
-[![versions](https://img.shields.io/pypi/pyversions/importloc.svg)](https://pypi.org/project/importloc)
+[![license](https://img.shields.io/github/license/makukha/importloc.svg)](https://github.com/makukha/importloc/blob/main/LICENSE)
 [![pypi](https://img.shields.io/pypi/v/importloc.svg#v0.2.0)](https://pypi.python.org/pypi/importloc)
+[![python versions](https://img.shields.io/pypi/pyversions/importloc.svg)](https://pypi.org/project/importloc)
+[![tests](https://raw.githubusercontent.com/makukha/importloc/v0.2.0/docs/_static/badge-tests.svg)](https://github.com/makukha/importloc)
+[![coverage](https://raw.githubusercontent.com/makukha/importloc/v0.2.0/docs/_static/badge-coverage.svg)](https://github.com/makukha/importloc)
 [![tested with multipython](https://img.shields.io/badge/tested_with-multipython-x)](https://github.com/makukha/multipython)
 [![using docsub](https://img.shields.io/badge/using-docsub-royalblue)](https://github.com/makukha/docsub)
-[![license](https://img.shields.io/github/license/makukha/importloc.svg)](https://github.com/makukha/importloc/blob/main/LICENSE)
 <!-- docsub: end -->
 
 
@@ -39,7 +41,7 @@ $ pip install importloc
 <!-- docsub: lines after 1 upto -1 -->
 ```doctest
 >>> from importloc import *
->>> foobar = import_module_from_file('example/foobar.py')
+>>> foobar = import_module_from_file('example/foobar.py', replace=True)
 >>> foobar
 <module 'foobar' from '/.../example/foobar.py'>
 ```
@@ -52,7 +54,7 @@ $ pip install importloc
 <!-- docsub: lines after 1 upto -1 -->
 ```doctest
 >>> from importloc import *
->>> baz = import_object_from_file('example/foobar.py:baz')
+>>> baz = import_object_from_file('example/foobar.py:baz', replace=True)
 >>> baz
 <function baz at 0x...>
 ```
@@ -65,7 +67,7 @@ $ pip install importloc
 <!-- docsub: lines after 1 upto -1 -->
 ```doctest
 >>> from importloc import *
->>> baz = import_object_from_module('example.foobar:baz')
+>>> baz = import_object_from_module('example.foobar:baz', replace=True)
 >>> baz
 <function baz at 0x...>
 ```

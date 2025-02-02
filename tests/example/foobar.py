@@ -1,3 +1,3 @@
 # example/foobar.py
-def baz():
+def baz() -> None:
     print('foo bar baz')
