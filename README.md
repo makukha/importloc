@@ -39,7 +39,7 @@ $ pip install importloc
 <!-- docsub: lines after 1 upto -1 -->
 ```doctest
 >>> from importloc import *
->>> foobar = import_module_from_file('example/foobar.py')
+>>> foobar = import_module_from_file('example/foobar.py', replace=True)
 >>> foobar
 <module 'foobar' from '/.../example/foobar.py'>
 ```
@@ -52,7 +52,7 @@ $ pip install importloc
 <!-- docsub: lines after 1 upto -1 -->
 ```doctest
 >>> from importloc import *
->>> baz = import_object_from_file('example/foobar.py:baz')
+>>> baz = import_object_from_file('example/foobar.py:baz', replace=True)
 >>> baz
 <function baz at 0x...>
 ```
@@ -65,7 +65,7 @@ $ pip install importloc
 <!-- docsub: lines after 1 upto -1 -->
 ```doctest
 >>> from importloc import *
->>> baz = import_object_from_module('example.foobar:baz')
+>>> baz = import_object_from_module('example.foobar:baz', replace=True)
 >>> baz
 <function baz at 0x...>
 ```
