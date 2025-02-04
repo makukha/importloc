@@ -1,5 +1,11 @@
 services:
 
+  mermaid-cli:
+    image: minlag/mermaid-cli
+    working_dir: /work
+    volumes:
+      - .:/work
+
   tox:
     image: makukha/multipython:unsafe
     working_dir: /work

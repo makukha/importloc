@@ -1,0 +1,24 @@
+classDiagram
+    Location <|-- ModuleLocation
+    Location <|-- PathLocation
+    click Location href "https://importloc.readthedocs.io/en/latest/api.html#importloc.Location"
+    click ModuleLocation href "https://importloc.readthedocs.io/en/latest/api.html#importloc.ModuleLocation"
+    click PathLocation href "https://importloc.readthedocs.io/en/latest/api.html#importloc.PathLocation"
+
+    class Location{
+        +spec : str
+        +object : str | None
+        +from_spec(spec)
+        +load(module_name, when_imported)
+    }
+
+    class ModuleLocation{
+        +module : str
+        +match(spec)
+    }
+
+    class PathLocation{
+        +path : Path
+        +match(spec)
+    }
+
