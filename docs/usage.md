@@ -7,13 +7,13 @@ from importloc import Location
 
 ### Import from file
 
-````{note}
+#### Syntax
 ```python
 Location('app/config.py:conf').load()
 ```
-````
 
-```pycon
+#### Example
+```doctest
 >>> loc = Location('app/config.py:conf')
 >>> loc
 <PathLocation 'app/config.py' obj='conf'>
