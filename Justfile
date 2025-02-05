@@ -1,5 +1,5 @@
 default:
-  @just --list
+    @just --list
 
 
 # helpers
@@ -16,16 +16,23 @@ init:
     #!/usr/bin/env bash
     set -euo pipefail
     sudo port install gh uv
+    uv tool install "docsub>=0.8"  # use global b/c docsub depends on importloc
     just sync
-    # install pre-commit hook
+    # pre-commit hook
     echo -e "#!/usr/bin/env bash\njust pre-commit" > .git/hooks/pre-commit
     chmod a+x .git/hooks/pre-commit
 
 
-# update local dev environment
+# synchronize local dev environment
 [group('dev')]
 sync:
     uv sync --all-groups
+
+
+# update local dev environment
+[group('dev')]
+upd:
+    uv sync --all-groups --upgrade
 
 
 # add news item of type
@@ -48,14 +55,13 @@ lint:
 
 # build python package
 [group('dev')]
-build:
-    @just sync
+build: sync
     make build
 
 
 # run tests
 [group('dev')]
-test *toxargs: ( build )
+test *toxargs: build
     time docker compose run --rm -it tox \
         {{ if toxargs == "" { "run-parallel" } else { "run" } }} \
         --installpkg="$(find dist -name '*.whl')" {{toxargs}}
@@ -66,11 +72,11 @@ test *toxargs: ( build )
 shell:
     docker compose run --rm -it --entrypoint bash tox
 
+
 # compile docs
 [group('dev')]
 docs:
     make docs
-    uv run docsub apply -i README.md
 
 
 #
@@ -81,8 +87,8 @@ docs:
 
 # run pre-commit hook
 [group('commit')]
-pre-commit:
-    @just lint docs
+pre-commit: lint docs
+
 
 # create GitHub pull request
 [group('commit')]
@@ -147,6 +153,5 @@ gh-release:
 
 # publish package on PyPI
 [group('release')]
-pypi-publish:
-    @just build
+pypi-publish: ( build )
     uv publish

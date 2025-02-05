@@ -1,4 +1,0 @@
->>> from importloc import *
->>> foobar = import_module_from_file('example/foobar.py', replace=True)
->>> foobar
-<module 'foobar' from '/.../example/foobar.py'>

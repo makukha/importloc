@@ -10,7 +10,7 @@ author = 'Michael Makukha'
 release = '0.2.0'
 
 # general
-templates_path = ['_templates']
+default_role = 'py:obj'
 extensions = [
     'myst_parser',
     'sphinx.ext.autodoc',
@@ -20,11 +20,20 @@ extensions = [
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
+    'sphinx_design',
     'sphinx_sitemap',
 ]
+suppress_warnings = [
+    'myst.header',
+]
+templates_path = ['_templates']
 
 # autodoc
-autodoc_typehints = 'both'
+add_module_names = False
+autoclass_content = 'both'
+autodoc_docstring_signature = True
+autodoc_member_order = 'bysource'
+autodoc_typehints = 'signature'
 
 # extlinks
 extlinks = {

@@ -1,0 +1,18 @@
+classDiagram
+    Location <|-- ModuleLocation
+    Location <|-- PathLocation
+
+    class Location{
+        +spec : str
+        +obj : str | None
+        +load(modname, on_conflict, rename)
+        +match(spec: str)
+    }
+
+    class ModuleLocation{
+        +module : str
+    }
+
+    class PathLocation{
+        +path : Path
+    }

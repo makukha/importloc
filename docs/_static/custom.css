@@ -1,6 +1,21 @@
+dl.class {
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+}
+
+dl.exception {
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+}
+
 dl.function {
-    margin-block-start: 2em;
-    margin-block-end: 2em;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+}
+
+dl.method {
+    margin-block-start: 1em;
+    margin-block-end: 1em;
 }
 
 table.autosummary {

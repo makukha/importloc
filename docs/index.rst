@@ -1,46 +1,65 @@
 importloc
 =========
 
-| *Import Python objects from arbitrary locations.*
-
-.. include:: parts/badges.md
-    :parser: commonmark
-
 .. toctree::
     :maxdepth: 1
     :caption: Details
     :hidden:
 
+    api
+    alternatives
     changelog
-    other
 
+.. include:: desc.md
+    :parser: commonmark
 
-Functions
----------
+.. include:: badges.md
+    :parser: commonmark
+
+.. include:: features.md
+    :parser: commonmark
 
 .. currentmodule:: importloc
 
+.. rubric:: Locations
 .. autosummary::
     :nosignatures:
 
-    import_module_from_file
-    import_object_from_file
-    import_object_from_module
+    Location
+    ModuleLocation
+    PathLocation
+
+.. rubric:: Utils
+.. autosummary::
+    :nosignatures:
+
+    get_instances
+    get_subclasses
+    getattr_nested
+    random_name
 
 
 Installation
 ------------
 
-.. include:: parts/installation.md
+.. tab-set::
+
+    .. tab-item:: pip
+
+        .. code:: shell
+
+            $ pip install importloc
+
+    .. tab-item:: uv
+
+        .. code:: shell
+
+            $ uv add importloc
+
+
+Usage
+-----
+
+.. include:: usage.md
     :parser: commonmark
 
-
-API Reference
--------------
-
-.. code-block:: python
-
-    from importloc import *
-
-.. automodule:: importloc
-    :members:
