@@ -37,7 +37,9 @@ classifiers = [
 dynamic = ["version"]
 
 requires-python = ">=3.9"
-dependencies = []
+dependencies = [
+    "typing-extensions>=4.12.2",
+]
 
 [dependency-groups]
 dev = [
@@ -53,6 +55,7 @@ docs = [
   "furo; python_version>='3.12'",
   "myst-parser; python_version>='3.12'",
   "sphinx; python_version>='3.12'",
+  "sphinx-design; python_version>='3.12'",
   "sphinx-sitemap; python_version>='3.12'",
 ]
 
@@ -62,15 +65,20 @@ docs = [
 current_version = "0.2.0"
 allow_dirty = true
 files = [
-  {filename = "docs/parts/badges.md"},
+  {filename = "docs/badges.md"},
   {filename = "docs/conf.py"},
-  {filename = "src/importloc/__version__.py"},
+  {filename = "src/importloc/__init__.py"},
 ]
 
 # hatch
 
 [tool.hatch.version]
-path = "src/importloc/__version__.py"
+path = "src/importloc/__init__.py"
+
+# mypy
+
+[tool.mypy]
+strict = true
 
 # ruff
 
@@ -105,7 +113,3 @@ type = [
   {name = "Misc", directory = "misc", showcontent = true},
 ]
 
-# uv
-
-[tool.uv]
-package = true
