@@ -5,7 +5,7 @@ default:
 # helpers
 git-head := "$(git rev-parse --abbrev-ref HEAD)"
 gh-issue := "$(git rev-parse --abbrev-ref HEAD | cut -d- -f1)"
-gh-title := "$(GH_PAGER=cat gh issue view {{gh-issue}} --json title -t '{{{{.title}}')"
+gh-title := "$(GH_PAGER=cat gh issue view " + gh-issue + " --json title -t '{{.title}}')"
 version := "$(uv run bump-my-version show current_version 2>/dev/null)"
 
 
@@ -92,8 +92,8 @@ pre-commit: lint docs
 
 # create GitHub pull request
 [group('commit')]
-gh-pr title:
-    gh pr create -d -t "{{title}}"
+gh-pr *title:
+    gh pr create -d -t "{{ if title == "" { gh-title } else { title } }}"
 
 
 #
@@ -104,17 +104,18 @@ gh-pr title:
 # just test
 # just docs
 #
-# just pre-commit
-# just gh-pr "title"
+# just gh-pr
 #
-# just version
+# just bump
 # just changelog
 # (proofread changelog)
 #
 # just docs
 # just build
+# (merge pull request)
+#
 # just gh-release
-# just publish-pypi
+# just pypi-publish
 #
 
 
@@ -153,5 +154,5 @@ gh-release:
 
 # publish package on PyPI
 [group('release')]
-pypi-publish: ( build )
+pypi-publish: build
     uv publish

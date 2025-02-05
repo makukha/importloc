@@ -8,6 +8,32 @@ All notable changes to this project will be documented in this file based on [Ke
 
 <!-- towncrier release notes start -->
 
+## [v0.3.0](https://github.com/makukha/importloc/releases/tag/v0.3.0) — 2025-02-05
+
+***Breaking 🔥***
+
+- Switched to class-based module organisation ([#26](https://github.com/makukha/importloc/issues/26))
+
+***Removed 💨***
+
+- Removed import functions ([#26](https://github.com/makukha/importloc/issues/26))
+
+***Added 🌿***
+
+- Test coverage and badges ([#24](https://github.com/makukha/importloc/issues/24))
+- Module name conflict resolution strategies ([#26](https://github.com/makukha/importloc/issues/26))
+- Module import is now atomic: previous state is restored on import error ([#26](https://github.com/makukha/importloc/issues/26))
+
+***Docs***
+
+- Added list of existing implementations ([#24](https://github.com/makukha/importloc/issues/24))
+
+***Misc***
+
+- Started using [Just](https://just.systems) ([#24](https://github.com/makukha/importloc/issues/24))
+- Added pre-commit hooks ([#24](https://github.com/makukha/importloc/issues/24))
+
+
 ## [v0.2.0](https://github.com/makukha/importloc/releases/tag/v0.2.0) — 2025-01-18
 
 ***Breaking 🔥***
