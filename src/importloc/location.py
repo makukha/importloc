@@ -33,9 +33,8 @@ directly to enforce corresponding location type.
 .. raw:: html
     :file: ../../docs/_static/classes-default.svg
     :class: only-light
-
 """
-
+from abc import ABC
 from contextlib import contextmanager
 from enum import Enum
 import importlib.util
@@ -74,49 +73,46 @@ class ConflictResolution(str, Enum):
     RAISE = 'raise'
 
 
-class Location:
-    """
-    __init__(self, spec: str) -> Union[ModuleLocation, PathLocation]
-
-    Arbitrary importable location.
-
-    :param spec:
-        location specification string.
-
-    :raises InvalidLocation:
-        when location string format is incorrect.
-
-    """
-
+class Location(ABC):
     spec: str
     obj: Optional[str]
 
-    def __new__(cls, spec: str) -> Union['ModuleLocation', 'PathLocation']:  # type: ignore[misc]
-        for cls in (ModuleLocation, PathLocation):
-            loc = cls.from_spec(spec)
-            if loc:
-                return loc
+    def __new__(cls, spec: str | Path) -> Union['ModuleLocation', 'PathLocation']:  # type: ignore[misc]
+        """
+        __init__(self, spec: str) -> Union[ModuleLocation, PathLocation]
+
+        Arbitrary importable location.
+
+        :param spec:
+            location specification string.
+
+        :raises InvalidLocation:
+            when location string format is incorrect.
+        """
+        for loctype in cls._types(spec):
+            if isinstance(spec, Path) and not spec.is_absolute():
+                spec = f'./{spec}'
+            match = loctype.match(str(spec))
+            if match:
+                return loctype(**match.groupdict())
         raise InvalidLocation(spec)
 
     @classmethod
-    def from_spec(cls, spec: str) -> Optional[Self]:
+    def match(cls, spec: str) -> Optional[re.Match[str]]:
         """
-        Create location object from specification string, if possible.
+        Match location specification string with regular expression for specific
+        location type.
 
         :param spec:
             location specification string.
         """
-        for loc in (ModuleLocation, PathLocation):
-            match = loc.match(spec)
-            if match:
-                return cls(**match.groupdict())
-        return None
+        raise NotImplementedError
 
     def load(
         self,
-        module_name: Union[str, Callable[[Self], str], None] = None,
+        modname: Union[str, Callable[[Self], str], None] = None,
         on_conflict: Union[ConflictResolution, str] = 'raise',
-        retry_name: Optional[Callable[[Self], str]] = None,
+        rename: Optional[Callable[[str, Self], str]] = None,
     ) -> Union[object, ModuleType]:
         """
         Import requested object or the whole module object from location.
@@ -126,20 +122,20 @@ class Location:
         * on import error, previous module with the same name is restored
         * on import error, new partially initialized module is removed from `sys.modules`
 
-        :param module_name:
+        :param modname:
             name under which the module will be imported; if `str`,
-            use ``module_name`` itself; if `~typing.Callable`, use result of
-            calling ``module_name()`` with current `Location` object;
+            use ``modname`` itself; if `~typing.Callable`, use result of
+            calling ``modname()`` with current `Location` object;
             otherwise, use default value (see `ModuleLocation.load`
             and `PathLocation.load` for details).
 
         :param on_conflict:
-            behaviour if ``module_name`` is already present in `sys.modules`
+            behaviour if ``modname`` is already present in `sys.modules`
             (see `ConflictResolution` for details).
 
-        :param retry_name:
+        :param rename:
             callable used to generate new module name on name conflict and if
-            ``on_conflict`` is ``rename``.
+            ``on_conflict`` is ``rename``; first string argument is ``modname`` that leads to conflict, second argument is current `Location`.
 
         :raises TypeError | ValueError:
             when passed arguments of wrong type.
@@ -153,6 +149,17 @@ class Location:
         """
         raise NotImplementedError
 
+    # internal helpers
+
+    @staticmethod
+    def _types(spec: Any) -> list[Union[type['ModuleLocation'], type['PathLocation']]]:
+        if isinstance(spec, str):
+            return [ModuleLocation, PathLocation]
+        elif isinstance(spec, Path):
+            return [PathLocation]
+        else:
+            raise TypeError(f'Unexpected spec type {type(spec)}')
+
     # error helpers with unified error messages
 
     @staticmethod
@@ -164,8 +171,8 @@ class Location:
         return ValueError(f'Argument {arg} is required when spec is not passed')
 
     @staticmethod
-    def _import_error(module_name: str) -> ImportError:
-        return ImportError(f'Module "{module_name}" cannot be imported')
+    def _import_error(modname: str) -> ImportError:
+        return ImportError(f'Module "{modname}" cannot be imported')
 
 
 class ModuleLocation(Location):
@@ -204,7 +211,13 @@ class ModuleLocation(Location):
         :raises InvalidLocation:
             when location string format is incorrect.
         """
-        if spec is not None:
+        if spec is None:
+            if module is None:
+                raise self._arg_required_with_no_spec('module')
+            self.module = module
+            self.obj = obj
+            self.spec = module if self.obj is None else f'{self.module}:{self.obj}'
+        else:
             if module is not None or obj is not None:
                 raise self._args_denied_with_spec()
             match = self.match(spec)
@@ -213,25 +226,6 @@ class ModuleLocation(Location):
             self.spec = spec
             self.module = match.group('module')
             self.obj = match.groupdict().get('obj', None)
-        else:
-            if module is None:
-                raise self._arg_required_with_no_spec('module')
-            self.module = module
-            self.obj = obj
-            self.spec = module if self.obj is None else f'{self.module}:{self.obj}'
-
-    @classmethod
-    def from_spec(cls, spec: str) -> Optional[Self]:
-        """
-        Create module-based location object from specification string.
-
-        :param spec:
-            location specification string.
-        """
-        match = cls.match(spec)
-        if match:
-            return cls(**match.groupdict())
-        return None
 
     @classmethod
     def match(cls, spec: str) -> Optional[re.Match[str]]:
@@ -246,9 +240,9 @@ class ModuleLocation(Location):
     @override
     def load(
         self,
-        module_name: Union[str, Callable[[Self], str], None] = None,
+        modname: Union[str, Callable[[Self], str], None] = None,
         on_conflict: Union[ConflictResolution, str] = 'raise',
-        retry_name: Optional[Callable[[Self], str]] = None,
+        rename: Optional[Callable[[str, Self], str]] = None,
     ) -> Union[object, ModuleType]:
         """
         Import requested object or the whole module object from importable module.
@@ -258,26 +252,26 @@ class ModuleLocation(Location):
         * on import error, previous module with the same name is restored
         * on import error, new partially initialized module is removed from `sys.modules`
 
-        :param module_name:
+        :param modname:
             name under which the module will be imported; if `str`,
-            use ``module_name`` itself; if `~typing.Callable`, use result of
-            calling ``module_name()`` with current `Location` object;
+            use ``modname`` itself; if `~typing.Callable`, use result of
+            calling ``modname()`` with current `Location` object;
             by default, use ``module`` from ``spec``.
 
         :param on_conflict:
-            behaviour if ``module_name`` is already present in `sys.modules`
+            behaviour if ``modname`` is already present in `sys.modules`
             (see `ConflictResolution` for details).
 
-        :param retry_name:
+        :param rename:
             callable used to generate new module name on name conflict and if
-            ``on_conflict`` is ``rename``.
+            ``on_conflict`` is ``rename``; first string argument is ``modname`` that leads to conflict, second argument is current `Location`.
 
         :raises TypeError | ValueError:
             when passed arguments of wrong type.
         :raises ModuleNameConflict:
             see `ConflictResolution` for details.
         :raises ModuleNotFoundError:
-            when ``module_name`` is not discoverable.
+            when ``modname`` is not discoverable.
         :raises ImportError:
             when module import fails.
         :raises AttributeError:
@@ -288,9 +282,9 @@ class ModuleLocation(Location):
         """
         modname, action = resolve_module_name(
             default=self.module,
-            override=module_name,
+            override=modname,
             on_conflict=on_conflict,
-            retry_name=retry_name,
+            rename=rename,
             loc=self,
         )
         # import module
@@ -342,15 +336,15 @@ class PathLocation(Location):
 
     def __init__(
         self,
-        spec: Optional[str] = None,
+        spec: Union[str, Path, None] = None,
         *,
         path: Union[Path, str, None] = None,
         obj: Optional[str] = None,
     ) -> None:
         """
         :param spec:
-            location specification string; if ``spec`` is passed, other arguments
-            must be absent or `None`.
+            location specification string or `Path` object; if ``spec`` is passed,
+            other arguments must be absent or `None`.
 
         :param path:
             path to python source file to import from; required, if ``spec`` is
@@ -365,34 +359,28 @@ class PathLocation(Location):
         :raises InvalidLocation:
             when location string format is incorrect.
         """
-        if spec is not None:
-            if path is not None or obj is not None:
-                raise self._args_denied_with_spec()
-            match = self.match(spec)
-            if match is None:
-                raise InvalidLocation(spec)
-            self.spec = spec
-            self.path = Path(match.group('path'))
-            self.obj = match.groupdict().get('obj', None)
-        else:
+        if spec is None:
             if path is None:
                 raise self._arg_required_with_no_spec('path')
             self.path = Path(path)
             self.obj = obj
             self.spec = str(path) if self.obj is None else f'{self.path}:{self.obj}'
-
-    @classmethod
-    def from_spec(cls, spec: str) -> Optional[Self]:
-        """
-        Create path-based location object from specification string.
-
-        :param spec:
-            location specification string.
-        """
-        match = cls.match(spec)
-        if match:
-            return cls(**match.groupdict())
-        return None
+        else:
+            if path is not None or obj is not None:
+                raise self._args_denied_with_spec()
+            if isinstance(spec, Path):
+                self.spec = str(spec)
+                self.path = spec
+                self.obj = None
+            elif isinstance(spec, str):
+                match = self.match(spec)
+                if match is None:
+                    raise InvalidLocation(spec)
+                self.spec = spec
+                self.path = Path(match.group('path'))
+                self.obj = match.groupdict().get('obj', None)
+            else:
+                raise TypeError(f'Unexpected spec type {type(spec)}')
 
     @classmethod
     def match(cls, spec: str) -> Optional[re.Match[str]]:
@@ -407,9 +395,9 @@ class PathLocation(Location):
     @override
     def load(
         self,
-        module_name: Union[str, Callable[[Self], str], None] = None,
+        modname: Union[str, Callable[[Self], str], None] = None,
         on_conflict: Union[ConflictResolution, str] = 'raise',
-        retry_name: Optional[Callable[[Self], str]] = None,
+        rename: Optional[Callable[[str, Self], str]] = None,
     ) -> Union[object, ModuleType]:
         """
         Import requested object or the whole module object from location.
@@ -419,19 +407,19 @@ class PathLocation(Location):
         * on import error, previous module with the same name is restored
         * on import error, new partially initialized module is removed from `sys.modules`
 
-        :param module_name:
+        :param modname:
             name under which the module will be imported; if `str`,
-            use ``module_name`` itself; if `~typing.Callable`, use result of
-            calling ``module_name()`` with current `Location` object;
+            use ``modname`` itself; if `~typing.Callable`, use result of
+            calling ``modname()`` with current `Location` object;
             by default, use ``path`` stem from ``spec``.
 
         :param on_conflict:
-            behaviour if ``module_name`` is already present in `sys.modules`
+            behaviour if ``modname`` is already present in `sys.modules`
             (see `ConflictResolution` for details).
 
-        :param retry_name:
+        :param rename:
             callable used to generate new module name on name conflict and if
-            ``on_conflict`` is ``rename``.
+            ``on_conflict`` is ``rename``; first string argument is ``modname`` that leads to conflict, second argument is current `Location`.
 
         :raises TypeError | ValueError:
             when passed arguments of wrong type.
@@ -451,9 +439,9 @@ class PathLocation(Location):
         """
         modname, action = resolve_module_name(
             default=self.path.stem,
-            override=module_name,
+            override=modname,
             on_conflict=on_conflict,
-            retry_name=retry_name,
+            rename=rename,
             loc=self,
         )
         # validate path
@@ -493,6 +481,9 @@ class PathLocation(Location):
 # undocumented helpers
 
 
+L = TypeVar('L', bound=Location)
+
+
 @contextmanager
 def atomic_import(modname: str) -> Any:
     old = {m: sys.modules.get(m, None) for m in explode_module_name(modname)}
@@ -525,20 +516,24 @@ def reload(modobj: ModuleType) -> None:
         importlib.reload(modobj)
 
 
-L = TypeVar('L', bound=Location)
+def explode_module_name(modname: str) -> Iterable[str]:
+    end = 0
+    while end != -1:
+        end = modname.find('.', end + 1)
+        yield modname[:end]
 
 
 def resolve_module_name(
     default: str,
     override: Union[str, Callable[[L], str], None],
     on_conflict: Union[ConflictResolution, str],
-    retry_name: Optional[Callable[[L], str]],
+    rename: Optional[Callable[[str, L], str]],
     loc: L,
 ) -> Tuple[str, Literal['use', 'import']]:
     # validate args
     on_conflict = ConflictResolution(on_conflict)
-    if on_conflict == ConflictResolution.RENAME and not callable(retry_name):
-        raise ValueError('retry_name must be callable')
+    if on_conflict == ConflictResolution.RENAME and not callable(rename):
+        raise ValueError('rename must be callable')
 
     # determine initial module name
     if override is None:
@@ -548,7 +543,7 @@ def resolve_module_name(
     elif callable(override):
         modname = override(loc)
     else:
-        raise ValueError(f'Unexpected module_name override type {type(override)}')
+        raise ValueError(f'Unexpected modname override type {type(override)}')
 
     # module already imported?
     if modname not in sys.modules:
@@ -563,7 +558,7 @@ def resolve_module_name(
     elif on_conflict == ConflictResolution.REPLACE:
         return modname, 'import'
     elif on_conflict == ConflictResolution.RENAME:
-        modname = retry_name(loc)  # type: ignore # checked above
+        modname = rename(modname, loc)  # type: ignore # checked above
         if modname in sys.modules:
             raise ModuleNameConflict(modname)
         return modname, 'import'
@@ -571,10 +566,3 @@ def resolve_module_name(
         raise ModuleNameConflict(modname)
     else:
         raise RuntimeError('unreachable')
-
-
-def explode_module_name(modname: str) -> Iterable[str]:
-    end = 0
-    while end != -1:
-        end = modname.find('.', end + 1)
-        yield modname[:end]

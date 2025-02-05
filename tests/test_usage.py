@@ -89,7 +89,19 @@ class T2(TestCase, layout=app_layout):
     """
 
 
-class T3(TestCase, layout=app_layout):
+class T3(TestCase, layout=replace(app_layout, chdir='app')):
+    """Use `Path` object when loading module
+
+    >>> from pathlib import Path
+    >>> loc = Location(Path('config.py'))
+    >>> loc
+    <PathLocation 'config.py'>
+    >>> loc.load()
+    <module 'config' from '...'>
+    """
+
+
+class T4(TestCase, layout=app_layout):
     """Import all instances of a type
 
     >>> from collections.abc import Callable
@@ -102,7 +114,7 @@ class T3(TestCase, layout=app_layout):
     """
 
 
-class T4(TestCase, layout=app_layout):
+class T5(TestCase, layout=app_layout):
     """Import all subclasses
 
     >>> from importloc import get_subclasses
@@ -120,7 +132,7 @@ class T4(TestCase, layout=app_layout):
 class N1(TestCase, layout=app_layout):
     """Use different module name
 
-    >>> Location('app/config.py:Config').load(module_name='app_main')
+    >>> Location('app/config.py:Config').load(modname='app_main')
     <class 'app_main.Config'>
     """
 
@@ -129,7 +141,7 @@ class N2(TestCase, layout=app_layout):
     """Generate module name at run time
 
     >>> from importloc import random_name
-    >>> Location('app/config.py:Config').load(module_name=random_name)
+    >>> Location('app/config.py:Config').load(modname=random_name)
     <class 'u....Config'>
     """
 
@@ -209,7 +221,7 @@ class R5(TestCase, layout=app_layout):
     >>> from importloc import random_name
     >>> Location('app/config.py').load()
     <module 'config' from ...>
-    >>> Location('app/config.py').load(on_conflict='rename', retry_name=random_name)
+    >>> Location('app/config.py').load(on_conflict='rename', rename=random_name)
     <module 'u...'>
     """
 
@@ -218,10 +230,10 @@ class R6(TestCase, layout=app_layout):
     """Combine override and rename
 
     >>> from importloc import random_name
-    >>> Location('app/config.py').load(module_name='app_config')
+    >>> Location('app/config.py').load(modname='app_config')
     <module 'app_config' from ...>
     >>> Location('app/config.py').load(
-    ...     module_name='app_config', on_conflict='rename', retry_name=random_name
+    ...     modname='app_config', on_conflict='rename', rename=random_name
     ... )
     <module 'u...' from ...>
     """
