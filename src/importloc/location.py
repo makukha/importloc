@@ -34,6 +34,7 @@ directly to enforce corresponding location type.
     :file: ../../docs/_static/classes-default.svg
     :class: only-light
 """
+
 from abc import ABC
 from contextlib import contextmanager
 from enum import Enum
