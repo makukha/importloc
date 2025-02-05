@@ -78,7 +78,7 @@ class Location(ABC):
     spec: str
     obj: Optional[str]
 
-    def __new__(cls, spec: str | Path) -> Union['ModuleLocation', 'PathLocation']:  # type: ignore[misc]
+    def __new__(cls, spec: Union[str, Path]) -> Union['ModuleLocation', 'PathLocation']:  # type: ignore[misc]
         """
         __init__(self, spec: str) -> Union[ModuleLocation, PathLocation]
 

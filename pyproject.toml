@@ -61,7 +61,7 @@ docs = [
 # bump-my-version
 
 [tool.bumpversion]
-current_version = "0.2.0"
+current_version = "0.3.0"
 allow_dirty = true
 files = [
   {filename = "docs/badges.md"},
@@ -77,6 +77,7 @@ path = "src/importloc/__init__.py"
 # mypy
 
 [tool.mypy]
+python_version = "3.9"
 strict = true
 
 # ruff

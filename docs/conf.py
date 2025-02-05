@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.abspath('../src'))
 project = 'importloc'
 copyright = '2025, Michael Makukha'
 author = 'Michael Makukha'
-release = '0.2.0'
+release = '0.3.0'
 
 # general
 default_role = 'py:obj'
