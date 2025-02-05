@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "importloc"
-description = "Import Python objects from arbitrary locations"
+description = "Import Python objects from arbitrary locations specified by string"
 license = {text = "MIT"}
 readme = "README.md"
 urls.Documentation = "https://importloc.readthedocs.io"
@@ -44,7 +44,6 @@ dependencies = [
 [dependency-groups]
 dev = [
   "bump-my-version; python_version>='3.12'",
-  "docsub; python_version>='3.12'",
   "genbadge[tests,coverage]>=1.1; python_version>='3.12'",
   "mypy; python_version>='3.12'",
   "pytest>=8.3; python_version>='3.12'",

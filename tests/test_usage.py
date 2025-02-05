@@ -43,8 +43,6 @@ class L2(TestCase, layout=app_layout):
 class L3(TestCase, layout=replace(app_layout, chdir='app')):
     """Distinguish file and module locations
 
-    With chdir to ./app
-
     >>> loc = Location('config.py:conf')
     >>> loc
     <ModuleLocation 'config.py' obj='conf'>
@@ -53,7 +51,7 @@ class L3(TestCase, layout=replace(app_layout, chdir='app')):
         ...
     ModuleNotFoundError: No module named 'config.py'...
 
-    Use explicitly relative path. Any path separator will result in `PathLocation`
+    Use explicitly relative path. Path separator will result in `PathLocation`
     instead of `ModuleLocation`.
 
     >>> loc = Location('./config.py:conf')
@@ -102,7 +100,7 @@ class T3(TestCase, layout=replace(app_layout, chdir='app')):
 
 
 class T4(TestCase, layout=app_layout):
-    """Import all instances of a type
+    """Import all instances of some type
 
     >>> from collections.abc import Callable
     >>> from importloc import get_instances
@@ -178,7 +176,7 @@ class R2(TestCase, layout=app_layout):
 
 
 class R3(TestCase, layout=app_layout):
-    """Relad module that is already imported
+    """Reload module that is already imported
 
     >>> import sys
     >>> C = Location('app/config.py:Config').load()
@@ -209,7 +207,7 @@ class R4(TestCase, layout=app_layout):
     >>> C = Location('app/config.py:Config').load(on_conflict='replace')
     >>> C
     <class 'config.Config'>
-    >>> # module object is the new one
+    >>> # module object is the new one:
     >>> id(sys.modules['config']) == mod_id
     False
     """
