@@ -35,6 +35,7 @@ directly to enforce corresponding location type.
     :class: only-light
 
 """
+
 from contextlib import contextmanager
 from enum import Enum
 import importlib.util
@@ -59,6 +60,7 @@ class ConflictResolution(str, Enum):
     """
     Conflict resolution strategy when module with given name is already imported.
     """
+
     #: Don't import again, use existing module from `sys.modules`.
     REUSE = 'reuse'
     #: Don't import again, apply `importlib.reload` to existing module in `sys.modules`.
@@ -85,10 +87,11 @@ class Location:
         when location string format is incorrect.
 
     """
+
     spec: str
     obj: Optional[str]
 
-    def __new__(cls, spec: str) -> Union['ModuleLocation', 'PathLocation']: # type: ignore[misc]
+    def __new__(cls, spec: str) -> Union['ModuleLocation', 'PathLocation']:  # type: ignore[misc]
         for cls in (ModuleLocation, PathLocation):
             loc = cls.from_spec(spec)
             if loc:
@@ -169,14 +172,13 @@ class ModuleLocation(Location):
     """
     Package-based importable location, e.g. ``foo.bar:obj``
     """
+
     module: str
     RX = re.compile(rf'^(?P<module>{_OBJ})(?::(?P<obj>{_OBJ}))?$')
-
 
     # bypass Location.__new__
     def __new__(cls, *args: Any, **kwargs: Any) -> 'ModuleLocation':
         return object.__new__(cls)
-
 
     def __init__(
         self,
@@ -240,7 +242,6 @@ class ModuleLocation(Location):
             location specification string.
         """
         return cls.RX.match(spec)
-
 
     @override
     def load(
@@ -314,9 +315,9 @@ class ModuleLocation(Location):
     def __repr__(self) -> str:
         cls = self.__class__.__name__
         if self.obj is None:
-            return "<{} {!r}>".format(cls, self.module)
+            return '<{} {!r}>'.format(cls, self.module)
         else:
-            return "<{} {!r} obj={!r}>".format(cls, self.module, self.obj)
+            return '<{} {!r} obj={!r}>'.format(cls, self.module, self.obj)
 
 
 class PathLocation(Location):
@@ -331,13 +332,13 @@ class PathLocation(Location):
     >>> loc.load()
     <module 'foobar' from '.../example/foobar.py'>
     """
+
     path: Path
     RX = re.compile(rf'^(?P<path>{_PYPATH})(?::(?P<obj>{_OBJ}))?$')
 
     # bypass Location.__new__
     def __new__(cls, *args: Any, **kwargs: Any) -> 'PathLocation':
         return object.__new__(cls)
-
 
     def __init__(
         self,
@@ -484,9 +485,9 @@ class PathLocation(Location):
     def __repr__(self) -> str:
         cls = self.__class__.__name__
         if self.obj is None:
-            return "<{} {!r}>".format(cls, str(self.path))
+            return '<{} {!r}>'.format(cls, str(self.path))
         else:
-            return "<{} {!r} obj={!r}>".format(cls, str(self.path), self.obj)
+            return '<{} {!r} obj={!r}>'.format(cls, str(self.path), self.obj)
 
 
 # undocumented helpers

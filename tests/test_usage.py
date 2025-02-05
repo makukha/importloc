@@ -7,7 +7,10 @@ app_layout = DirectoryLayout(
     files=(
         File('app/__main__.py', 'def cli(): ...'),
         File('app/config.py', 'class Config:\n  class Nested: ...\nconf = Config()'),
-        File('app/errors.py', 'class Error1(Exception): ...\nclass Error2(Exception): ...'),
+        File(
+            'app/errors.py',
+            'class Error1(Exception): ...\nclass Error2(Exception): ...',
+        ),
     ),
 )
 
@@ -217,6 +220,8 @@ class R6(TestCase, layout=app_layout):
     >>> from importloc import random_name
     >>> Location('app/config.py').load(module_name='app_config')
     <module 'app_config' from ...>
-    >>> Location('app/config.py').load(module_name='app_config', on_conflict='rename', retry_name=random_name)
+    >>> Location('app/config.py').load(
+    ...     module_name='app_config', on_conflict='rename', retry_name=random_name
+    ... )
     <module 'u...' from ...>
     """

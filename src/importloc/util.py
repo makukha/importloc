@@ -45,7 +45,8 @@ def get_subclasses(obj: object, cls: type[T]) -> list[type[T]]:
     :return: list of object member classes.
     """
     return [
-        mem for name, mem in inspect.getmembers(obj)
+        mem
+        for name, mem in inspect.getmembers(obj)
         if isinstance(mem, type) and issubclass(mem, cls)
     ]
 
