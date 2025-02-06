@@ -38,12 +38,15 @@ dynamic = ["version"]
 
 requires-python = ">=3.9"
 dependencies = [
+    "docsub",
     "typing-extensions>=4.12.2",
 ]
 
 [dependency-groups]
 dev = [
   "bump-my-version; python_version>='3.12'",
+  "caseutil>=0.7; python_version>='3.12'",
+  "docsub>=0.8.3; python_version>='3.12'",
   "genbadge[tests,coverage]>=1.1; python_version>='3.12'",
   "mypy; python_version>='3.12'",
   "pytest>=8.3; python_version>='3.12'",
@@ -79,6 +82,9 @@ path = "src/importloc/__init__.py"
 [tool.mypy]
 python_version = "3.9"
 strict = true
+exclude = [
+  "docsubfile.py",
+]
 
 # ruff
 
@@ -112,4 +118,3 @@ type = [
   {name = "Docs", directory = "docs", showcontent = true},
   {name = "Misc", directory = "misc", showcontent = true},
 ]
-

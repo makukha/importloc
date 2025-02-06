@@ -14,7 +14,6 @@ init:
     #!/usr/bin/env bash
     set -euo pipefail
     sudo port install gh uv
-    uv tool install "docsub>=0.8"  # use global b/c docsub depends on importloc
     just sync
     # pre-commit hook
     echo -e "#!/usr/bin/env bash\njust pre-commit" > .git/hooks/pre-commit

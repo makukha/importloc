@@ -21,7 +21,8 @@ docs: \
 docs/_build: \
 		docs/_static/classes-dark.svg \
 		docs/_static/classes-default.svg \
-		docs/* docs/**/* src/**/*
+		docs/usage.md \
+		docs/**/*.* src/**/*.*
 	rm -rf $@
 	cd docs && uv run sphinx-build -b html . _build
 
@@ -37,10 +38,10 @@ docs/_static/badge-coverage.svg: .tmp/coverage.xml
 docs/_static/badge-tests.svg: .tmp/junit.xml
 	uv run genbadge tests --local -i $< -o $@
 
-docs/usage.md: tests/test_usage.py
+docs/usage.md: FORCE
 	uv run docsub apply -i $@
 
-README.md: FORCE
+README.md: docs/usage.md FORCE
 	uv run docsub apply -i $@
 
 

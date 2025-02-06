@@ -23,8 +23,10 @@ extensions = [
     'sphinx_design',
     'sphinx_sitemap',
 ]
+nitpicky = True
 suppress_warnings = [
     'myst.header',
+    'myst.xref_missing',  # when generating TOC in usage.md
 ]
 templates_path = ['_templates']
 
@@ -45,6 +47,9 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'sphinx': ('https://www.sphinx-doc.org/en/master', None),
 }
+
+# myst
+myst_heading_anchors = 4
 
 # html
 

@@ -1,6 +1,6 @@
 from dataclasses import replace
 
-from util import TestCase, DirectoryLayout, File
+from importloc.testing import TestCase, DirectoryLayout, File
 
 
 app_layout = DirectoryLayout(
@@ -21,6 +21,10 @@ app_layout = DirectoryLayout(
 class L1(TestCase, layout=app_layout):
     """Import from file
 
+    ```python
+    Location('app/config.py:conf').load()
+    ```
+
     >>> loc = Location('app/config.py:conf')
     >>> loc
     <PathLocation 'app/config.py' obj='conf'>
@@ -31,6 +35,10 @@ class L1(TestCase, layout=app_layout):
 
 class L2(TestCase, layout=app_layout):
     """Import from module
+
+    ```python
+    Location('app.__main__:cli').load()
+    ```
 
     >>> loc = Location('app.__main__:cli')
     >>> loc
@@ -43,6 +51,10 @@ class L2(TestCase, layout=app_layout):
 class L3(TestCase, layout=replace(app_layout, chdir='app')):
     """Distinguish file and module locations
 
+    ```python
+    Location('./config.py:conf').load()
+    ```
+
     >>> loc = Location('config.py:conf')
     >>> loc
     <ModuleLocation 'config.py' obj='conf'>
@@ -51,8 +63,8 @@ class L3(TestCase, layout=replace(app_layout, chdir='app')):
         ...
     ModuleNotFoundError: No module named 'config.py'...
 
-    Use explicitly relative path. Path separator will result in `PathLocation`
-    instead of `ModuleLocation`.
+    Use relative path (similar to Docker bind mount). Path separator will result in
+    `PathLocation` instead of `ModuleLocation`.
 
     >>> loc = Location('./config.py:conf')
     >>> loc
@@ -68,6 +80,10 @@ class L3(TestCase, layout=replace(app_layout, chdir='app')):
 class T1(TestCase, layout=app_layout):
     """Import nested class
 
+    ```python
+    Location('app/config.py:Config.Nested').load()
+    ```
+
     >>> loc = Location('app/config.py:Config.Nested')
     >>> loc
     <PathLocation 'app/config.py' obj='Config.Nested'>
@@ -79,6 +95,10 @@ class T1(TestCase, layout=app_layout):
 class T2(TestCase, layout=app_layout):
     """Import module as a whole
 
+    ```python
+    Location('app/config.py').load()
+    ```
+
     >>> loc = Location('app/config.py')
     >>> loc
     <PathLocation 'app/config.py'>
@@ -89,6 +109,10 @@ class T2(TestCase, layout=app_layout):
 
 class T3(TestCase, layout=replace(app_layout, chdir='app')):
     """Use `Path` object when loading module
+
+    ```python
+    Location(Path('config.py')).load()
+    ```
 
     >>> from pathlib import Path
     >>> loc = Location(Path('config.py'))
@@ -102,6 +126,10 @@ class T3(TestCase, layout=replace(app_layout, chdir='app')):
 class T4(TestCase, layout=app_layout):
     """Import all instances of some type
 
+    ```python
+    get_instances(Location('app.__main__').load(), Callable)
+    ```
+
     >>> from collections.abc import Callable
     >>> from importloc import get_instances
     >>> loc = Location('app.__main__')
@@ -114,6 +142,10 @@ class T4(TestCase, layout=app_layout):
 
 class T5(TestCase, layout=app_layout):
     """Import all subclasses
+
+    ```python
+    get_subclasses(Location('app.errors').load(), Exception)
+    ```
 
     >>> from importloc import get_subclasses
     >>> loc = Location('app.errors')
@@ -130,6 +162,10 @@ class T5(TestCase, layout=app_layout):
 class N1(TestCase, layout=app_layout):
     """Use different module name
 
+    ```python
+    Location('...').load(modname='app_main')
+    ```
+
     >>> Location('app/config.py:Config').load(modname='app_main')
     <class 'app_main.Config'>
     """
@@ -137,6 +173,10 @@ class N1(TestCase, layout=app_layout):
 
 class N2(TestCase, layout=app_layout):
     """Generate module name at run time
+
+    ```python
+    Location('...').load(modname=random_name)
+    ```
 
     >>> from importloc import random_name
     >>> Location('app/config.py:Config').load(modname=random_name)
@@ -150,6 +190,10 @@ class N2(TestCase, layout=app_layout):
 class R1(TestCase, layout=app_layout):
     """Module name conflict raises error by default
 
+    ```python
+    Location('...').load()
+    ```
+
     >>> Location('app/config.py:Config').load()
     <class 'config.Config'>
     >>> Location('app/config.py:Config').load()
@@ -161,6 +205,10 @@ class R1(TestCase, layout=app_layout):
 
 class R2(TestCase, layout=app_layout):
     """Reuse module that is already imported
+
+    ```python
+    Location('...').load(on_conflict='reuse')
+    ```
 
     >>> C = Location('app/config.py:Config').load()
     >>> C
@@ -177,6 +225,10 @@ class R2(TestCase, layout=app_layout):
 
 class R3(TestCase, layout=app_layout):
     """Reload module that is already imported
+
+    ```python
+    Location('...').load(on_conflict='reload')
+    ```
 
     >>> import sys
     >>> C = Location('app/config.py:Config').load()
@@ -199,6 +251,10 @@ class R3(TestCase, layout=app_layout):
 class R4(TestCase, layout=app_layout):
     """Replace old module with imported one
 
+    ```python
+    Location('...').load(on_conflict='replace')
+    ```
+
     >>> import sys
     >>> C = Location('app/config.py:Config').load()
     >>> C
@@ -216,6 +272,10 @@ class R4(TestCase, layout=app_layout):
 class R5(TestCase, layout=app_layout):
     """Load module under different generated name
 
+    ```python
+    Location('...').load(on_conflict='rename', rename=random_name)
+    ```
+
     >>> from importloc import random_name
     >>> Location('app/config.py').load()
     <module 'config' from ...>
@@ -226,6 +286,10 @@ class R5(TestCase, layout=app_layout):
 
 class R6(TestCase, layout=app_layout):
     """Combine override and rename
+
+    ```python
+    Location('...').load(modname='...', on_conflict='rename', rename=random_name)
+    ```
 
     >>> from importloc import random_name
     >>> Location('app/config.py').load(modname='app_config')

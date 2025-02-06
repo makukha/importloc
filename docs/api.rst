@@ -1,7 +1,7 @@
 API Reference
 =============
 
-.. currentmodule:: importloc
+.. currentmodule:: importloc.location
 
 .. rubric:: Locations
 .. autosummary::
@@ -10,6 +10,8 @@ API Reference
     Location
     ModuleLocation
     PathLocation
+
+.. currentmodule:: importloc.util
 
 .. rubric:: Utils
 .. autosummary::

@@ -318,7 +318,7 @@ class ModuleLocation(Location):
 class PathLocation(Location):
     """
     __init__(self, spec: str) -> None
-    __init__(self, *, path: Union[Path, str], obj: Optional[str] = None) -> None
+    __init__(self, *, path: Union[~pathlib.Path, str], obj: Optional[str] = None) -> None
 
     Filesystem-based importable location, e.g. ``foo/bar.py:obj``
 
@@ -344,8 +344,8 @@ class PathLocation(Location):
     ) -> None:
         """
         :param spec:
-            location specification string or `Path` object; if ``spec`` is passed,
-            other arguments must be absent or `None`.
+            location specification string or `~pathlib.Path` object; if ``spec``
+            is passed, other arguments must be absent or `None`.
 
         :param path:
             path to python source file to import from; required, if ``spec`` is
