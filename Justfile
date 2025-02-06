@@ -98,6 +98,7 @@ gh-pr *title:
     git diff --cached --exit-code
     git ls-files --other --exclude-standard --directory
     git push
+    # create pr
     gh pr create -d -t "{{ if title == "" { gh-title } else { title } }}"
 
 #
@@ -108,9 +109,11 @@ gh-pr *title:
 # just bump
 # just changelog
 # (proofread changelog)
+
+# just docs build
+# (commit)
 #
-# just docs
-# just build
+# just gh-pr
 # (merge pull request)
 #
 # just gh-release
@@ -148,7 +151,7 @@ gh-release:
         exit 1
     fi
     tag="v{{version}}"
-    git tag "v$tag" HEAD
+    git tag "$tag" HEAD
     gh release create -d -t "$tag — $(date -Idate)" --generate-notes "$tag"
 
 # publish package on PyPI
