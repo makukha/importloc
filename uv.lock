@@ -74,6 +74,15 @@ wheels = [
 ]
 
 [[package]]
+name = "caseutil"
+version = "0.7.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/1e/57611bb2607eb445abb65bd61357be72238c8b5f6c87f89e153b2abdc280/caseutil-0.7.1.tar.gz", hash = "sha256:2d176849f871cab997aca89b0aea4912326c98063216d6bb867ea6b99ac3ffcf", size = 32332 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/70/86fb8fb246297776e9a0e2e5cc566ad741116fd70389cbfcf6dffd1c7130/caseutil-0.7.1-py2.py3-none-any.whl", hash = "sha256:c61b0728b2491a0c26c0f05f0fef5355d3f7c2f84ad8a7ad38539ed70c0fa935", size = 7042 },
+]
+
+[[package]]
 name = "certifi"
 version = "2025.1.31"
 source = { registry = "https://pypi.org/simple" }
@@ -187,6 +196,22 @@ wheels = [
 ]
 
 [[package]]
+name = "docsub"
+version = "0.8.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "importloc", marker = "python_full_version >= '3.12'" },
+    { name = "loguru", marker = "python_full_version >= '3.12'" },
+    { name = "pydantic-settings", marker = "python_full_version >= '3.12'" },
+    { name = "rich-click", marker = "python_full_version >= '3.12'" },
+    { name = "typing-extensions", marker = "python_full_version >= '3.12'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b2/e6/fbcad43577cd9d8ed8c1a2251adadd0dba68457ac43f3bec17b83a0fcc1f/docsub-0.8.3.tar.gz", hash = "sha256:64a9d8e44a5ad3bb220cddedb87a08e8ff12a21629994a37ba3f7842cf059663", size = 68489 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/14/f3/fb1f90abdadc95142ba7a957bf6fbddc45cf100867d06943cb3760da8f52/docsub-0.8.3-py3-none-any.whl", hash = "sha256:305cbff648ee988ae739e7f3247108fc0f319a8638c70af18b7c62cfcd3ba203", size = 20708 },
+]
+
+[[package]]
 name = "docutils"
 version = "0.21.2"
 source = { registry = "https://pypi.org/simple" }
@@ -262,6 +287,8 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "bump-my-version", marker = "python_full_version >= '3.12'" },
+    { name = "caseutil", marker = "python_full_version >= '3.12'" },
+    { name = "docsub", marker = "python_full_version >= '3.12'" },
     { name = "genbadge", extra = ["coverage", "tests"], marker = "python_full_version >= '3.12'" },
     { name = "mypy", marker = "python_full_version >= '3.12'" },
     { name = "pytest", marker = "python_full_version >= '3.12'" },
@@ -282,6 +309,8 @@ requires-dist = [{ name = "typing-extensions", specifier = ">=4.12.2" }]
 [package.metadata.requires-dev]
 dev = [
     { name = "bump-my-version", marker = "python_full_version >= '3.12'" },
+    { name = "caseutil", marker = "python_full_version >= '3.12'", specifier = ">=0.7" },
+    { name = "docsub", marker = "python_full_version >= '3.12'", specifier = ">=0.8.3" },
     { name = "genbadge", extras = ["tests", "coverage"], marker = "python_full_version >= '3.12'", specifier = ">=1.1" },
     { name = "mypy", marker = "python_full_version >= '3.12'" },
     { name = "pytest", marker = "python_full_version >= '3.12'", specifier = ">=8.3" },
@@ -315,6 +344,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/af/92/b3130cbbf5591acf9ade8708c365f3238046ac7cb8ccba6e81abccb0ccff/jinja2-3.1.5.tar.gz", hash = "sha256:8fefff8dc3034e27bb80d67c671eb8a9bc424c0ef4c0826edbff304cceff43bb", size = 244674 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bd/0f/2ba5fbcd631e3e88689309dbe978c5769e883e4b84ebfe7da30b43275c5a/jinja2-3.1.5-py3-none-any.whl", hash = "sha256:aba0f4dc9ed8013c424088f68a5c226f7d6097ed89b246d7749c2ec4175c6adb", size = 134596 },
+]
+
+[[package]]
+name = "loguru"
+version = "0.7.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
+    { name = "win32-setctime", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3a/05/a1dae3dffd1116099471c643b8924f5aa6524411dc6c63fdae648c4f1aca/loguru-0.7.3.tar.gz", hash = "sha256:19480589e77d47b8d85b2c827ad95d49bf31b0dcde16593892eb51dd18706eb6", size = 63559 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0c/29/0348de65b8cc732daa3e33e67806420b2ae89bdce2b04af740289c5c6c8c/loguru-0.7.3-py3-none-any.whl", hash = "sha256:31a33c10c8e1e10422bfd431aeb5d351c7cf7fa671e3c4df004162264b28220c", size = 61595 },
 ]
 
 [[package]]
@@ -1087,4 +1129,13 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/6c/63/53559446a878410fc5a5974feb13d31d78d752eb18aeba59c7fef1af7598/wcwidth-0.2.13.tar.gz", hash = "sha256:72ea0c06399eb286d978fdedb6923a9eb47e1c486ce63e9b4e64fc18303972b5", size = 101301 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fd/84/fd2ba7aafacbad3c4201d395674fc6348826569da3c0937e75505ead3528/wcwidth-0.2.13-py2.py3-none-any.whl", hash = "sha256:3da69048e4540d84af32131829ff948f1e022c1c6bdb8d6102117aac784f6859", size = 34166 },
+]
+
+[[package]]
+name = "win32-setctime"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b3/8f/705086c9d734d3b663af0e9bb3d4de6578d08f46b1b101c2442fd9aecaa2/win32_setctime-1.2.0.tar.gz", hash = "sha256:ae1fdf948f5640aae05c511ade119313fb6a30d7eabe25fef9764dca5873c4c0", size = 4867 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e1/07/c6fe3ad3e685340704d314d765b7912993bcb8dc198f0e7a89382d37974b/win32_setctime-1.2.0-py3-none-any.whl", hash = "sha256:95d644c4e708aba81dc3704a116d8cbc974d70b3bdb8be1d150e36be6e9d1390", size = 4083 },
 ]

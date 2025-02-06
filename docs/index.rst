@@ -19,7 +19,7 @@ importloc
 .. include:: features.md
     :parser: commonmark
 
-.. currentmodule:: importloc
+.. currentmodule:: importloc.location
 
 .. rubric:: Locations
 .. autosummary::
@@ -28,6 +28,8 @@ importloc
     Location
     ModuleLocation
     PathLocation
+
+.. currentmodule:: importloc.util
 
 .. rubric:: Utils
 .. autosummary::

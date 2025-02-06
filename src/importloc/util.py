@@ -4,7 +4,8 @@ from typing import Any, TypeVar, Union
 from uuid import uuid4
 
 
-T = TypeVar('T')
+#: Arbitrary type.
+T = TypeVar('T', bound=type)
 
 
 def get_instances(obj: object, cls: type[T]) -> list[T]:
@@ -29,7 +30,7 @@ def get_instances(obj: object, cls: type[T]) -> list[T]:
 
 def get_subclasses(obj: object, cls: type[T]) -> list[type[T]]:
     """
-    Get object member subclasses of specified type.
+    Get object member subclasses of specified class, excluding the class itself.
 
     Uses `inspect.getmembers` and `issubclass`.
 
@@ -45,9 +46,9 @@ def get_subclasses(obj: object, cls: type[T]) -> list[type[T]]:
     :return: list of object member classes.
     """
     return [
-        mem
-        for name, mem in inspect.getmembers(obj)
-        if isinstance(mem, type) and issubclass(mem, cls)
+        m
+        for name, m in inspect.getmembers(obj)
+        if isinstance(m, type) and issubclass(m, cls) and m is not cls
     ]
 
 
