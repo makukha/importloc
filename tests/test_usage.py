@@ -299,3 +299,20 @@ class R6(TestCase, layout=app_layout):
     ... )
     <module 'u...' from ...>
     """
+
+
+class O1(TestCase, layout=app_layout):
+    """Missing object causes `AttributeError`
+
+    When module was imported but requested object does not exist, `AttributeError`
+    is raised.
+
+    >>> Location('app/config.py:unknown').load()
+    Traceback (most recent call last):
+        ...
+    AttributeError: object has no attribute 'unknown'
+    >>> # due to import atomicity, module 'config' was removed
+    >>> import sys
+    >>> 'config' in sys.modules
+    False
+    """

@@ -91,7 +91,7 @@ def getattr_nested(
             current = getattr(current, part)
         except AttributeError as exc:
             if isinstance(default, type) and issubclass(default, Exception):
-                raise default(f'object does not have attribute "{name}"') from exc
+                raise default(f'object has no attribute {name!r}') from exc
             else:
                 return default
     return current

@@ -29,7 +29,7 @@ def usage(subcommand: str, testpath: click.Path, nameregex: str) -> None:
 
 
 RX_DOCSTRING = re.compile(
-    r'^(?P<title>.+?)\n\n(?P<syntax>```.+?```\n)(?=\n)(?P<body>.*)',
+    r'^(?P<title>.+?)\n\n(?P<body>.*)',
     re.DOTALL,
 )
 RX_DOCTEST = re.compile(
@@ -42,11 +42,12 @@ def format_section(text: Union[str, None]) -> str:
     if text is None or (m := RX_DOCSTRING.fullmatch(text)) is None:
         raise ValueError('Invalid docstring format')
 
-    body = RX_DOCTEST.sub(r'```pycon\n\g<code>\n```', m.group('body'))
+    body = m.group('body')
+    body = re.sub(r'\n>>>', '\n_Example_\n>>>', body, count=1, flags=re.DOTALL)
+    body = RX_DOCTEST.sub(r'```pycon\n\g<code>\n```', body)
     lines = (
         f'### {m.group("title")}\n\n',
-        f'{m.group("syntax").strip()}\n\n',
-        f'_Example_{body}',
+        body,
     )
     return ''.join(lines)
 

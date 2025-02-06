@@ -24,10 +24,11 @@
 # Features
 
 * Minimalistic fully typed package
-* Importable locations: files and named modules
-* Handy helper utils
-* Configurable resolution when module is already imported: `reuse`, `reload`, `replace`, `rename`, `raise`
-* Atomic import: on `ImportError`, old module with the same name will be restored, and partially initialized module will be removed
+* Import from files or named modules
+* Import deeply nested objects
+* Import all instances or all subclasses
+* Configurable module name conflict resolution
+* Atomicity: on import error, new module is removed, and previous, if any, is restored
 <!-- docsub: end -->
 
 
@@ -81,6 +82,10 @@ from importloc import Location
     * [Combine override and rename](#combine-override-and-rename)
     <!-- docsub: end -->
 * What if object does not exist?
+    <!-- docsub: begin -->
+    <!-- docsub: x usage toc tests/test_usage.py 'O[0-9]' -->
+    * [Missing object causes `AttributeError`](#missing-object-causes-attribute-error)
+    <!-- docsub: end -->
 
 
 ## Various locations
@@ -399,7 +404,27 @@ _Example_
 
 ## What if object does not exist?
 
-When module was imported but requested object does not exist, `AttributeError` is raised.
+<!-- docsub: begin -->
+<!-- docsub: x usage section tests/test_usage.py 'O[0-9]' -->
+### Missing object causes `AttributeError`
+
+When module was imported but requested object does not exist, `AttributeError`
+is raised.
+
+_Example_
+```pycon
+>>> Location('app/config.py:unknown').load()
+Traceback (most recent call last):
+    ...
+AttributeError: object has no attribute 'unknown'
+>>> # due to import atomicity, module 'config' was removed
+>>> import sys
+>>> 'config' in sys.modules
+False
+```
+
+<!-- docsub: end -->
+
 <!-- docsub: end #readme -->
 
 # See also

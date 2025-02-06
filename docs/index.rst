@@ -19,6 +19,28 @@ importloc
 .. include:: features.md
     :parser: commonmark
 
+
+Installation
+------------
+
+.. tab-set::
+
+    .. tab-item:: pip
+
+        .. code:: shell
+
+            $ pip install importloc
+
+    .. tab-item:: uv
+
+        .. code:: shell
+
+            $ uv add importloc
+
+
+Overview
+--------
+
 .. currentmodule:: importloc.location
 
 .. rubric:: Locations
@@ -39,24 +61,6 @@ importloc
     get_subclasses
     getattr_nested
     random_name
-
-
-Installation
-------------
-
-.. tab-set::
-
-    .. tab-item:: pip
-
-        .. code:: shell
-
-            $ pip install importloc
-
-    .. tab-item:: uv
-
-        .. code:: shell
-
-            $ uv add importloc
 
 
 Usage
