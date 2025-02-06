@@ -1,9 +1,3 @@
-```python
-from importloc import Location
-```
-
-## Cases
-
 * Various locations
     <!-- docsub: begin -->
     <!-- docsub: x usage toc tests/test_usage.py 'L[0-9]' -->
@@ -37,6 +31,19 @@ from importloc import Location
     * [Combine override and rename](#combine-override-and-rename)
     <!-- docsub: end -->
 * What if object does not exist?
+    <!-- docsub: begin -->
+    <!-- docsub: x usage toc tests/test_usage.py 'O[0-9]' -->
+    * [Missing object causes `AttributeError`](#missing-object-causes-attribute-error)
+    <!-- docsub: end -->
+
+
+## Quick start
+
+The main and most used entity is `Location`.
+
+```python
+from importloc import Location
+```
 
 
 ## Various locations
@@ -355,4 +362,24 @@ _Example_
 
 ## What if object does not exist?
 
-When module was imported but requested object does not exist, `AttributeError` is raised.
+<!-- docsub: begin -->
+<!-- docsub: x usage section tests/test_usage.py 'O[0-9]' -->
+### Missing object causes `AttributeError`
+
+When module was imported but requested object does not exist, `AttributeError`
+is raised.
+
+_Example_
+```pycon
+>>> Location('app/config.py:unknown').load()
+Traceback (most recent call last):
+    ...
+AttributeError: object has no attribute 'unknown'
+>>> # due to import atomicity, module 'config' was removed
+>>> import sys
+>>> 'config' in sys.modules
+False
+```
+
+<!-- docsub: end -->
+

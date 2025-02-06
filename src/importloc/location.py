@@ -136,7 +136,8 @@ class Location(ABC):
 
         :param rename:
             callable used to generate new module name on name conflict and if
-            ``on_conflict`` is ``rename``; first string argument is ``modname`` that leads to conflict, second argument is current `Location`.
+            ``on_conflict`` is ``rename``; first string argument is ``modname``
+            that leads to conflict, second argument is current `Location`.
 
         :raises TypeError | ValueError:
             when passed arguments of wrong type.
@@ -178,6 +179,9 @@ class Location(ABC):
 
 class ModuleLocation(Location):
     """
+    __init__(self, spec: str) -> None
+    __init__(self, *, module: str, obj: Optional[str] = None) -> None
+
     Package-based importable location, e.g. ``foo.bar:obj``
     """
 
@@ -265,7 +269,8 @@ class ModuleLocation(Location):
 
         :param rename:
             callable used to generate new module name on name conflict and if
-            ``on_conflict`` is ``rename``; first string argument is ``modname`` that leads to conflict, second argument is current `Location`.
+            ``on_conflict`` is ``rename``; first string argument is ``modname`` that
+            leads to conflict, second argument is current `Location`.
 
         :raises TypeError | ValueError:
             when passed arguments of wrong type.
@@ -288,24 +293,25 @@ class ModuleLocation(Location):
             rename=rename,
             loc=self,
         )
-        # import module
-        if action == 'import':
-            with atomic_import(modname):
+        # process
+        with atomic_import(modname):
+            # import module
+            if action == 'import':
                 try:
                     modobj = importlib.import_module(modname)
                 except ModuleNotFoundError as exc:
                     raise exc
                 except Exception as exc:
                     raise self._import_error(modname) from exc
-        elif action == 'use':
-            modobj = sys.modules[modname]
-        else:
-            raise RuntimeError('unreachable')
-        # get object
-        if self.obj is None:
-            return modobj
-        else:
-            return getattr_nested(modobj, self.obj)
+            elif action == 'use':
+                modobj = sys.modules[modname]
+            else:
+                raise RuntimeError('unreachable')
+            # get object
+            if self.obj is None:
+                return modobj
+            else:
+                return getattr_nested(modobj, self.obj)
 
     def __repr__(self) -> str:
         cls = self.__class__.__name__
@@ -321,11 +327,6 @@ class PathLocation(Location):
     __init__(self, *, path: Union[~pathlib.Path, str], obj: Optional[str] = None) -> None
 
     Filesystem-based importable location, e.g. ``foo/bar.py:obj``
-
-    >>> loc = PathLocation('example/foobar.py:Parent.Nested')
-    <PathLocation 'example/foobar.py:Parent.Nested'>
-    >>> loc.load()
-    <module 'foobar' from '.../example/foobar.py'>
     """
 
     path: Path
@@ -420,7 +421,8 @@ class PathLocation(Location):
 
         :param rename:
             callable used to generate new module name on name conflict and if
-            ``on_conflict`` is ``rename``; first string argument is ``modname`` that leads to conflict, second argument is current `Location`.
+            ``on_conflict`` is ``rename``; first string argument is ``modname`` that
+            leads to conflict, second argument is current `Location`.
 
         :raises TypeError | ValueError:
             when passed arguments of wrong type.
@@ -451,9 +453,10 @@ class PathLocation(Location):
             raise FileNotFoundError(f'Path "{path}" does not exist.')
         elif path.is_dir():
             raise IsADirectoryError(f'Path "{path}" is a directory.')
-        # import module
-        if action == 'import':
-            with atomic_import(modname):
+        # load
+        with atomic_import(modname):
+            # import module
+            if action == 'import':
                 spec = importlib.util.spec_from_file_location(modname, path)
                 if spec is None or spec.loader is None:
                     raise self._import_error(modname)
@@ -461,15 +464,15 @@ class PathLocation(Location):
                     modobj = load_from_spec(spec)
                 except Exception as exc:
                     raise self._import_error(modname) from exc
-        elif action == 'use':
-            modobj = sys.modules[modname]
-        else:
-            raise RuntimeError('unreachable')
-        # get object
-        if self.obj is None:
-            return modobj
-        else:
-            return getattr_nested(modobj, self.obj)
+            elif action == 'use':
+                modobj = sys.modules[modname]
+            else:
+                raise RuntimeError('unreachable')
+            # get object
+            if self.obj is None:
+                return modobj
+            else:
+                return getattr_nested(modobj, self.obj)
 
     def __repr__(self) -> str:
         cls = self.__class__.__name__
@@ -490,7 +493,7 @@ def atomic_import(modname: str) -> Any:
     old = {m: sys.modules.get(m, None) for m in explode_module_name(modname)}
     try:
         yield
-    except Exception:
+    except:
         for name, value in old.items():
             if value is not None:
                 sys.modules[name] = value
@@ -521,7 +524,7 @@ def explode_module_name(modname: str) -> Iterable[str]:
     end = 0
     while end != -1:
         end = modname.find('.', end + 1)
-        yield modname[:end]
+        yield modname if end == -1 else modname[:end]
 
 
 def resolve_module_name(

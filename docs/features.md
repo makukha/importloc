@@ -1,7 +1,8 @@
 # Features
 
 * Minimalistic fully typed package
-* Importable locations: files and named modules
-* Handy helper utils
-* Configurable resolution when module is already imported: `reuse`, `reload`, `replace`, `rename`, `raise`
-* Atomic import: on `ImportError`, old module with the same name will be restored, and partially initialized module will be removed
+* Import from files or named modules
+* Import deeply nested objects
+* Import all instances or all subclasses
+* Configurable module name conflict resolution
+* Atomicity: on import error, new module is removed, and previous, if any, is restored

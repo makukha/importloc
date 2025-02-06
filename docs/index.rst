@@ -19,27 +19,6 @@ importloc
 .. include:: features.md
     :parser: commonmark
 
-.. currentmodule:: importloc.location
-
-.. rubric:: Locations
-.. autosummary::
-    :nosignatures:
-
-    Location
-    ModuleLocation
-    PathLocation
-
-.. currentmodule:: importloc.util
-
-.. rubric:: Utils
-.. autosummary::
-    :nosignatures:
-
-    get_instances
-    get_subclasses
-    getattr_nested
-    random_name
-
 
 Installation
 ------------
@@ -57,6 +36,29 @@ Installation
         .. code:: shell
 
             $ uv add importloc
+
+
+Overview
+--------
+
+.. currentmodule:: importloc.location
+
+.. autosummary::
+    :nosignatures:
+
+    Location
+    ModuleLocation
+    PathLocation
+
+.. currentmodule:: importloc.util
+
+.. autosummary::
+    :nosignatures:
+
+    get_instances
+    get_subclasses
+    getattr_nested
+    random_name
 
 
 Usage

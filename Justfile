@@ -13,7 +13,7 @@ version := "$(uv run bump-my-version show current_version 2>/dev/null)"
 init:
     #!/usr/bin/env bash
     set -euo pipefail
-    sudo port install gh uv
+    sudo port install gh git uv
     just sync
     # pre-commit hook
     echo -e "#!/usr/bin/env bash\njust pre-commit" > .git/hooks/pre-commit
@@ -71,26 +71,40 @@ docs:
 #  Commit
 # --------
 #
+# just pre-commit
+#
 
 # run pre-commit hook
 [group('commit')]
 pre-commit: lint docs
 
+#
+#  Merge
+# --------
+#
+# just pre-merge
+# just gh-pr
+#
+
+# run pre-merge
+[group('merge')]
+pre-merge: lint test docs
+
 # create GitHub pull request
-[group('commit')]
+[group('merge')]
 gh-pr *title:
+    # ensure clean state
+    git diff --exit-code
+    git diff --cached --exit-code
+    git ls-files --other --exclude-standard --directory
+    git push
     gh pr create -d -t "{{ if title == "" { gh-title } else { title } }}"
 
 #
 #  Release
 # ---------
 #
-# just lint
-# just test
-# just docs
-#
-# just gh-pr
-#
+# just pre-release
 # just bump
 # just changelog
 # (proofread changelog)
@@ -102,6 +116,10 @@ gh-pr *title:
 # just gh-release
 # just pypi-publish
 #
+
+# run pre-release
+[group('release')]
+pre-release: pre-merge
 
 # bump project version
 [group('release')]
