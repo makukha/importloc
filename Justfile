@@ -109,8 +109,11 @@ gh-pr *title:
 # just bump
 # just changelog
 # (proofread changelog)
-#
+
 # just docs build
+# (commit)
+#
+# just gh-pr
 # (merge pull request)
 #
 # just gh-release
