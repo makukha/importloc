@@ -8,6 +8,19 @@ All notable changes to this project will be documented in this file based on [Ke
 
 <!-- towncrier release notes start -->
 
+## [v0.3.1](https://github.com/makukha/importloc/releases/tag/v0.3.1) — 2025-02-06
+
+***Fixed***
+
+- `get_subclasses` returning the parent class itself ([#30](https://github.com/makukha/importloc/issues/30))
+- `atomic_import` did not cover object retrieval ([#31](https://github.com/makukha/importloc/issues/31))
+- `atomic import` did not store previous state correctly ([#31](https://github.com/makukha/importloc/issues/31))
+
+***Docs***
+
+- Usage docs are now generated from test cases ([#30](https://github.com/makukha/importloc/issues/30))
+
+
 ## [v0.3.0](https://github.com/makukha/importloc/releases/tag/v0.3.0) — 2025-02-05
 
 ***Breaking 🔥***

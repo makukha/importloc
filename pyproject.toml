@@ -63,7 +63,7 @@ docs = [
 # bump-my-version
 
 [tool.bumpversion]
-current_version = "0.3.0"
+current_version = "0.3.1"
 allow_dirty = true
 files = [
   {filename = "docs/badges.md"},
