@@ -43,7 +43,6 @@ Overview
 
 .. currentmodule:: importloc.location
 
-.. rubric:: Locations
 .. autosummary::
     :nosignatures:
 
@@ -53,7 +52,6 @@ Overview
 
 .. currentmodule:: importloc.util
 
-.. rubric:: Utils
 .. autosummary::
     :nosignatures:
 

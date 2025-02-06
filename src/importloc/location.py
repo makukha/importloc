@@ -179,6 +179,9 @@ class Location(ABC):
 
 class ModuleLocation(Location):
     """
+    __init__(self, spec: str) -> None
+    __init__(self, *, module: str, obj: Optional[str] = None) -> None
+
     Package-based importable location, e.g. ``foo.bar:obj``
     """
 
@@ -324,11 +327,6 @@ class PathLocation(Location):
     __init__(self, *, path: Union[~pathlib.Path, str], obj: Optional[str] = None) -> None
 
     Filesystem-based importable location, e.g. ``foo/bar.py:obj``
-
-    >>> loc = PathLocation('example/foobar.py:Parent.Nested')
-    <PathLocation 'example/foobar.py:Parent.Nested'>
-    >>> loc.load()
-    <module 'foobar' from '.../example/foobar.py'>
     """
 
     path: Path

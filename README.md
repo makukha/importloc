@@ -43,12 +43,6 @@ $ pip install importloc
 
 <!-- docsub: begin #readme -->
 <!-- docsub: include docs/usage.md -->
-```python
-from importloc import Location
-```
-
-## Cases
-
 * Various locations
     <!-- docsub: begin -->
     <!-- docsub: x usage toc tests/test_usage.py 'L[0-9]' -->
@@ -86,6 +80,15 @@ from importloc import Location
     <!-- docsub: x usage toc tests/test_usage.py 'O[0-9]' -->
     * [Missing object causes `AttributeError`](#missing-object-causes-attribute-error)
     <!-- docsub: end -->
+
+
+## Quick start
+
+The main and most used entity is `Location`.
+
+```python
+from importloc import Location
+```
 
 
 ## Various locations
