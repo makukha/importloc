@@ -13,23 +13,22 @@ version := "$(uv run bump-my-version show current_version 2>/dev/null)"
 init:
     #!/usr/bin/env bash
     set -euo pipefail
-    sudo port install gh git uv
+    sudo port install gh uv yq
     just sync
     # pre-commit hook
     echo -e "#!/usr/bin/env bash\njust pre-commit" > .git/hooks/pre-commit
     chmod a+x .git/hooks/pre-commit
-
 # synchronize local dev environment
 [group('dev')]
 sync:
-    uv sync --all-groups
+    uv sync --all-extras --all-groups
 
-# update local dev environment
+# upgrade versions
 [group('dev')]
 upd:
-    uv sync --all-groups --upgrade
+    uv sync --all-extras --all-groups --upgrade
 
-# add news item of type
+# add news item
 [group('dev')]
 news type issue *msg:
     #!/usr/bin/env bash
@@ -37,8 +36,7 @@ news type issue *msg:
     issue="{{ if issue == "-" { gh-issue } else { issue } }}"
     msg="{{ if msg == "" { gh-title } else { msg } }}"
     uv run towncrier create -c "$msg" "$issue.{{type}}.md"
-
-# run linters
+# run checkers
 [group('dev')]
 lint:
     uv run mypy .
@@ -50,14 +48,14 @@ lint:
 build: sync
     make build
 
-# run tests
+# run tox tests
 [group('dev')]
 test *toxargs: build
     time docker compose run --rm -it tox \
         {{ if toxargs == "" { "run-parallel" } else { "run" } }} \
         --installpkg="$(find dist -name '*.whl')" {{toxargs}}
 
-# enter testing docker container
+# enter testing container
 [group('dev')]
 shell:
     docker compose run --rm -it --entrypoint bash tox
@@ -66,13 +64,6 @@ shell:
 [group('dev')]
 docs:
     make docs
-
-#
-#  Commit
-# --------
-#
-# just pre-commit
-#
 
 # run pre-commit hook
 [group('commit')]
@@ -105,24 +96,21 @@ gh-pr *title:
 #  Release
 # ---------
 #
-# just pre-release
+# just pre-merge
 # just bump
 # just changelog
-# (proofread changelog)
-
-# just docs build
-# (commit)
+# ...proofread changelog...
+#
+# just pre-merge
+# ...commit...
 #
 # just gh-pr
-# (merge pull request)
+# ...merge...
 #
 # just gh-release
+# just gh-meta
 # just pypi-publish
 #
-
-# run pre-release
-[group('release')]
-pre-release: pre-merge
 
 # bump project version
 [group('release')]
@@ -130,11 +118,10 @@ bump:
     #!/usr/bin/env bash
     set -euo pipefail
     uv run bump-my-version show-bump
-    printf 'Choose bump path: '
-    read BUMP
-    uv run bump-my-version bump -- "$BUMP"
+    printf 'Choose version part: '
+    read PART
+    uv run bump-my-version bump -- "$PART"
     uv lock
-
 # collect changelog entries
 [group('release')]
 changelog:
@@ -152,9 +139,15 @@ gh-release:
     fi
     tag="v{{version}}"
     git tag "$tag" HEAD
+    git push origin tag "$tag"
     gh release create -d -t "$tag — $(date -Idate)" --generate-notes "$tag"
-
 # publish package on PyPI
 [group('release')]
 pypi-publish: build
     uv publish
+
+# update GitHub repository metadata from pyproject.toml
+[group('release')]
+gh-meta:
+    gh repo edit -d "$(yq -r .project.description pyproject.toml)"
+    gh repo edit --add-topic "$(yq -r '.project.keywords | join(",")' -ojson pyproject.toml)"
