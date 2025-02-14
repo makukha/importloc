@@ -38,6 +38,15 @@ wheels = [
 ]
 
 [[package]]
+name = "attrs"
+version = "25.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/49/7c/fdf464bcc51d23881d110abd74b512a42b3d5d376a55a831b44c603ae17f/attrs-25.1.0.tar.gz", hash = "sha256:1c97078a80c814273a76b2a298a932eb681c87415c11dee0a6921de7f1b02c3e", size = 810562 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fc/30/d4986a882011f9df997a55e6becd864812ccfcd821d64aac8570ee39f719/attrs-25.1.0-py3-none-any.whl", hash = "sha256:c75a69e28a550a7e93789579c22aa26b0f5b83b75dc4e08fe092980051e1090a", size = 63152 },
+]
+
+[[package]]
 name = "babel"
 version = "2.17.0"
 source = { registry = "https://pypi.org/simple" }
@@ -193,6 +202,18 @@ wheels = [
 ]
 
 [[package]]
+name = "click-log"
+version = "0.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click", marker = "python_full_version >= '3.12'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/32/32/228be4f971e4bd556c33d52a22682bfe318ffe57a1ddb7a546f347a90260/click-log-0.4.0.tar.gz", hash = "sha256:3970f8570ac54491237bcdb3d8ab5e3eef6c057df29f8c3d1151a51a9c23b975", size = 9985 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ae/5a/4f025bc751087833686892e17e7564828e409c43b632878afeae554870cd/click_log-0.4.0-py2.py3-none-any.whl", hash = "sha256:a43e394b528d52112af599f2fc9e4b7cf3c15f94e53581f74fa6867e68c91756", size = 4273 },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -223,6 +244,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e0/24/f9fd358c8a38ff88c22fc2ccd30eccc198054f6fe0917177fb3360ce557a/docsub-0.9.0.tar.gz", hash = "sha256:d6e3e6dd30f0fdcb12ef6f97bc02ccdcfac4f873c78b5e18c0b6c3adf0897d1c", size = 73689 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8e/3d/a9af3d3aafc2aa6f5fb3772333cdf9e077281b7b8b79ef38d9506f037ce2/docsub-0.9.0-py3-none-any.whl", hash = "sha256:69ed0962b9542f589763bd55887ec7378cf2c4c091252d93f30a45a43cc0b7bb", size = 21430 },
+]
+
+[[package]]
+name = "doctestcase"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7e/70/7bcf93d478b6def297d5eb9aa5b34f8eb1587969c44be3bcd5efccc6348c/doctestcase-0.1.0.tar.gz", hash = "sha256:562d2a6cb045c06dafd4271dd91e66b4c2279af31850ba70de3fd550a83ad84b", size = 91099 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/28/da/8eaca238436c3df57dc6795f998f57cb466f051cbbad1476b919ccd416a1/doctestcase-0.1.0-py2.py3-none-any.whl", hash = "sha256:6c0aba226ef1902f1edbd6b95d7536654d928470be9457a1472ccd8b9009d6b2", size = 9695 },
 ]
 
 [[package]]
@@ -342,9 +372,8 @@ dev = [
     { name = "docsub", marker = "python_full_version >= '3.12'" },
     { name = "genbadge", extra = ["coverage", "tests"], marker = "python_full_version >= '3.12'" },
     { name = "mypy", marker = "python_full_version >= '3.12'" },
-    { name = "pytest", marker = "python_full_version >= '3.12'" },
     { name = "ruff", marker = "python_full_version >= '3.12'" },
-    { name = "towncrier", marker = "python_full_version >= '3.12'" },
+    { name = "scriv", marker = "python_full_version >= '3.12'" },
 ]
 docs = [
     { name = "furo", marker = "python_full_version >= '3.12'" },
@@ -352,6 +381,10 @@ docs = [
     { name = "sphinx", marker = "python_full_version >= '3.12'" },
     { name = "sphinx-design", marker = "python_full_version >= '3.12'" },
     { name = "sphinx-sitemap", marker = "python_full_version >= '3.12'" },
+]
+tests = [
+    { name = "doctestcase" },
+    { name = "pytest", marker = "python_full_version >= '3.12'" },
 ]
 
 [package.metadata]
@@ -359,14 +392,13 @@ requires-dist = [{ name = "typing-extensions", specifier = ">=4.12.2" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bump-my-version", marker = "python_full_version >= '3.12'" },
+    { name = "bump-my-version", marker = "python_full_version >= '3.12'", specifier = ">=0.32" },
     { name = "caseutil", marker = "python_full_version >= '3.12'", specifier = ">=0.7" },
-    { name = "docsub", marker = "python_full_version >= '3.12'", specifier = ">=0.8.3" },
+    { name = "docsub", marker = "python_full_version >= '3.12'", specifier = ">=0.9" },
     { name = "genbadge", extras = ["tests", "coverage"], marker = "python_full_version >= '3.12'", specifier = ">=1.1" },
     { name = "mypy", marker = "python_full_version >= '3.12'" },
-    { name = "pytest", marker = "python_full_version >= '3.12'", specifier = ">=8.3" },
     { name = "ruff", marker = "python_full_version >= '3.12'" },
-    { name = "towncrier", marker = "python_full_version >= '3.12'" },
+    { name = "scriv", marker = "python_full_version >= '3.12'", specifier = ">=1.5" },
 ]
 docs = [
     { name = "furo", marker = "python_full_version >= '3.12'" },
@@ -374,6 +406,10 @@ docs = [
     { name = "sphinx", marker = "python_full_version >= '3.12'" },
     { name = "sphinx-design", marker = "python_full_version >= '3.12'" },
     { name = "sphinx-sitemap", marker = "python_full_version >= '3.12'" },
+]
+tests = [
+    { name = "doctestcase", specifier = ">=0.1" },
+    { name = "pytest", marker = "python_full_version >= '3.12'", specifier = ">=8.3" },
 ]
 
 [[package]]
@@ -978,6 +1014,23 @@ wheels = [
 ]
 
 [[package]]
+name = "scriv"
+version = "1.5.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs", marker = "python_full_version >= '3.12'" },
+    { name = "click", marker = "python_full_version >= '3.12'" },
+    { name = "click-log", marker = "python_full_version >= '3.12'" },
+    { name = "jinja2", marker = "python_full_version >= '3.12'" },
+    { name = "markdown-it-py", marker = "python_full_version >= '3.12'" },
+    { name = "requests", marker = "python_full_version >= '3.12'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/56/35/6e05af688bc3f983a207a6f89acf139aa16693473360d0cbc2a9bda19efc/scriv-1.5.1.tar.gz", hash = "sha256:30ae9ff8d144f8e0cf394c4e1d379542f1b3823767642955b54ec40dc00b32b6", size = 84382 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3e/e6/cf5c273f57ded9dd0b22430eb62c2af3c883578bab0d824700355f4c16b2/scriv-1.5.1-py2.py3-none-any.whl", hash = "sha256:a3adc657733b4124fcb54527a5f3daab0d3c300de82d0fd2b9b297b243151b78", size = 35332 },
+]
+
+[[package]]
 name = "setuptools"
 version = "75.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1137,19 +1190,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/b1/09/a439bec5888f00a54b8b9f05fa94d7f901d6735ef4e55dcec9bc37b5d8fa/tomlkit-0.13.2.tar.gz", hash = "sha256:fff5fe59a87295b278abd31bec92c15d9bc4a06885ab12bcea52c71119392e79", size = 192885 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f9/b6/a447b5e4ec71e13871be01ba81f5dfc9d0af7e473da256ff46bc0e24026f/tomlkit-0.13.2-py3-none-any.whl", hash = "sha256:7a974427f6e119197f670fbbbeae7bef749a6c14e793db934baefc1b5f03efde", size = 37955 },
-]
-
-[[package]]
-name = "towncrier"
-version = "24.8.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click", marker = "python_full_version >= '3.12'" },
-    { name = "jinja2", marker = "python_full_version >= '3.12'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/69/d7/a5183f788cf4fabf03f7c767ae0b968249b0c737eb64b4d87a07ae01fea7/towncrier-24.8.0.tar.gz", hash = "sha256:013423ee7eed102b2f393c287d22d95f66f1a3ea10a4baa82d298001a7f18af3", size = 61635 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/93/1b/2f7b88506e22d9798c139261af4946865c0787cfa345514ca3c70173a9cc/towncrier-24.8.0-py3-none-any.whl", hash = "sha256:9343209592b839209cdf28c339ba45792fbfe9775b5f9c177462fd693e127d8d", size = 56981 },
 ]
 
 [[package]]

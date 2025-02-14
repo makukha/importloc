@@ -43,14 +43,13 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "bump-my-version; python_version>='3.12'",
+  "bump-my-version>=0.32; python_version>='3.12'",
   "caseutil>=0.7; python_version>='3.12'",
-  "docsub>=0.8.3; python_version>='3.12'",
+  "docsub>=0.9; python_version>='3.12'",
   "genbadge[tests,coverage]>=1.1; python_version>='3.12'",
   "mypy; python_version>='3.12'",
-  "pytest>=8.3; python_version>='3.12'",
   "ruff; python_version>='3.12'",
-  "towncrier; python_version>='3.12'",
+  "scriv>=1.5 ; python_version >= '3.12'",
 ]
 docs = [
   "furo; python_version>='3.12'",
@@ -58,6 +57,10 @@ docs = [
   "sphinx; python_version>='3.12'",
   "sphinx-design; python_version>='3.12'",
   "sphinx-sitemap; python_version>='3.12'",
+]
+tests = [
+  "doctestcase>=0.1",
+  "pytest>=8.3; python_version>='3.12'",
 ]
 
 # bump-my-version
@@ -79,11 +82,12 @@ path = "src/importloc/__init__.py"
 # mypy
 
 [tool.mypy]
-python_version = "3.9"
-strict = true
 exclude = [
   "docsubfile.py",
 ]
+incremental = false
+python_version = "3.9"
+strict = true
 
 # ruff
 
@@ -97,21 +101,13 @@ quote-style = "single"
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
 
-# towncrier
+# scriv
 
-[tool.towncrier]
-directory = "NEWS.d"
-filename = "CHANGELOG.md"
-title_format = "## [v{version}](https://github.com/makukha/importloc/releases/tag/v{version}) — {project_date}"
-issue_format = "[#{issue}](https://github.com/makukha/importloc/issues/{issue})"
-type = [
-  {name = "Security ⚠️", directory = "security", showcontent = true},
-  {name = "Breaking 🔥", directory = "breaking", showcontent = true},
-  {name = "Removed 💨", directory = "removed", showcontent = true},
-  {name = "Deprecated ❄️", directory = "deprecated", showcontent = true},
-  {name = "Added 🌿", directory = "added", showcontent = true},
-  {name = "Changed", directory = "changed", showcontent = true},
-  {name = "Fixed", directory = "fixed", showcontent = true},
-  {name = "Docs", directory = "docs", showcontent = true},
-  {name = "Misc", directory = "misc", showcontent = true},
-]
+[tool.scriv]
+categories = ["Security ⚠️", "Breaking 🔥", "Removed 💨", "Deprecated ❄️", "Added 🌿", "Changed", "Fixed", "Docs", "Misc"]
+entry_title_template = "[{% if version %}{{ version }}](https://github.com/makukha/importloc/releases/tag/v{{ version }}) — {% endif %}{{ date.strftime('%Y-%m-%d') }}"
+format = "md"
+fragment_directory = "NEWS.d"
+md_header_level = "2"
+new_fragment_template = "file: .jist/scriv.new_fragment.md.j2"
+version = "command: just version"
