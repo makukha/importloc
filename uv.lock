@@ -248,11 +248,11 @@ wheels = [
 
 [[package]]
 name = "doctestcase"
-version = "0.1.0"
+version = "0.2.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/7e/70/7bcf93d478b6def297d5eb9aa5b34f8eb1587969c44be3bcd5efccc6348c/doctestcase-0.1.0.tar.gz", hash = "sha256:562d2a6cb045c06dafd4271dd91e66b4c2279af31850ba70de3fd550a83ad84b", size = 91099 }
+sdist = { url = "https://files.pythonhosted.org/packages/44/4b/b96ed4d54228c6d8bcca5ed1d6a40a01de3e0f7c0b4a46155c5d36dad448/doctestcase-0.2.0.tar.gz", hash = "sha256:0b0007a2f3037f721a54888653988c1bdcae93602f9a5fd8b1af34de438e4759", size = 90754 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/28/da/8eaca238436c3df57dc6795f998f57cb466f051cbbad1476b919ccd416a1/doctestcase-0.1.0-py2.py3-none-any.whl", hash = "sha256:6c0aba226ef1902f1edbd6b95d7536654d928470be9457a1472ccd8b9009d6b2", size = 9695 },
+    { url = "https://files.pythonhosted.org/packages/11/91/b29fe5416b2503a85a7c68f2d8d97596135414f741f47bd01f07b57f05b8/doctestcase-0.2.0-py2.py3-none-any.whl", hash = "sha256:22fbd5f4dc54c210c8c6c21f0f151e7e8350204ed5c43a47e2a5547c6448883d", size = 9956 },
 ]
 
 [[package]]
@@ -408,7 +408,7 @@ docs = [
     { name = "sphinx-sitemap", marker = "python_full_version >= '3.12'" },
 ]
 tests = [
-    { name = "doctestcase", specifier = ">=0.1" },
+    { name = "doctestcase", specifier = ">=0.2" },
     { name = "pytest", marker = "python_full_version >= '3.12'", specifier = ">=8.3" },
 ]
 

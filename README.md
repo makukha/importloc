@@ -45,14 +45,14 @@ $ pip install importloc
 <!-- docsub: include docs/usage.md -->
 * Various locations
     <!-- docsub: begin -->
-    <!-- docsub: x usage toc tests/test_usage.py 'L[0-9]' -->
+    <!-- docsub: x toc tests/test_usage.py 'L[0-9]' -->
     * [Import from file](#import-from-file)
     * [Import from module](#import-from-module)
     * [Distinguish file and module locations](#distinguish-file-and-module-locations)
     <!-- docsub: end -->
 * Various targets
     <!-- docsub: begin -->
-    <!-- docsub: x usage toc tests/test_usage.py 'T[0-9]' -->
+    <!-- docsub: x toc tests/test_usage.py 'T[0-9]' -->
     * [Import nested class](#import-nested-class)
     * [Import module as a whole](#import-module-as-a-whole)
     * [Use `Path` object when loading module](#use-path-object-when-loading-module)
@@ -61,13 +61,13 @@ $ pip install importloc
     <!-- docsub: end -->
 * Custom module name
     <!-- docsub: begin -->
-    <!-- docsub: x usage toc tests/test_usage.py 'N[0-9]' -->
+    <!-- docsub: x toc tests/test_usage.py 'N[0-9]' -->
     * [Use different module name](#use-different-module-name)
     * [Generate module name at run time](#generate-module-name-at-run-time)
     <!-- docsub: end -->
 * What if module is already imported?
     <!-- docsub: begin -->
-    <!-- docsub: x usage toc tests/test_usage.py 'R[0-9]' -->
+    <!-- docsub: x toc tests/test_usage.py 'R[0-9]' -->
     * [Module name conflict raises error by default](#module-name-conflict-raises-error-by-default)
     * [Reuse module that is already imported](#reuse-module-that-is-already-imported)
     * [Reload module that is already imported](#reload-module-that-is-already-imported)
@@ -77,7 +77,7 @@ $ pip install importloc
     <!-- docsub: end -->
 * What if object does not exist?
     <!-- docsub: begin -->
-    <!-- docsub: x usage toc tests/test_usage.py 'O[0-9]' -->
+    <!-- docsub: x toc tests/test_usage.py 'O[0-9]' -->
     * [Missing object causes `AttributeError`](#missing-object-causes-attribute-error)
     <!-- docsub: end -->
 
@@ -94,14 +94,13 @@ from importloc import Location
 ## Various locations
 
 <!-- docsub: begin -->
-<!-- docsub: x usage section tests/test_usage.py 'L[0-9]' -->
-### Import from file
+<!-- docsub: x cases tests/test_usage.py 'L[0-9]' -->
+## Import from file
 
 ```python
 Location('app/config.py:conf').load()
 ```
 
-_Example_
 ```pycon
 >>> loc = Location('app/config.py:conf')
 >>> loc
@@ -110,13 +109,12 @@ _Example_
 <config.Config object at 0x...>
 ```
 
-### Import from module
+## Import from module
 
 ```python
 Location('app.__main__:cli').load()
 ```
 
-_Example_
 ```pycon
 >>> loc = Location('app.__main__:cli')
 >>> loc
@@ -125,13 +123,12 @@ _Example_
 <function cli at 0x...>
 ```
 
-### Distinguish file and module locations
+## Distinguish file and module locations
 
 ```python
 Location('./config.py:conf').load()
 ```
 
-_Example_
 ```pycon
 >>> loc = Location('config.py:conf')
 >>> loc
@@ -159,14 +156,13 @@ Use relative path (similar to Docker bind mount). Path separator will result in
 ## Various targets
 
 <!-- docsub: begin -->
-<!-- docsub: x usage section tests/test_usage.py 'T[0-9]' -->
-### Import nested class
+<!-- docsub: x cases tests/test_usage.py 'T[0-9]' -->
+## Import nested class
 
 ```python
 Location('app/config.py:Config.Nested').load()
 ```
 
-_Example_
 ```pycon
 >>> loc = Location('app/config.py:Config.Nested')
 >>> loc
@@ -175,13 +171,12 @@ _Example_
 <class 'config.Config.Nested'>
 ```
 
-### Import module as a whole
+## Import module as a whole
 
 ```python
 Location('app/config.py').load()
 ```
 
-_Example_
 ```pycon
 >>> loc = Location('app/config.py')
 >>> loc
@@ -190,13 +185,12 @@ _Example_
 <module 'config' from '...'>
 ```
 
-### Use `Path` object when loading module
+## Use `Path` object when loading module
 
 ```python
 Location(Path('config.py')).load()
 ```
 
-_Example_
 ```pycon
 >>> from pathlib import Path
 >>> loc = Location(Path('config.py'))
@@ -206,13 +200,12 @@ _Example_
 <module 'config' from '...'>
 ```
 
-### Import all instances of some type
+## Import all instances of some type
 
 ```python
 get_instances(Location('app.__main__').load(), Callable)
 ```
 
-_Example_
 ```pycon
 >>> from collections.abc import Callable
 >>> from importloc import get_instances
@@ -223,13 +216,12 @@ _Example_
 [<function cli at 0x...>]
 ```
 
-### Import all subclasses
+## Import all subclasses
 
 ```python
 get_subclasses(Location('app.errors').load(), Exception)
 ```
 
-_Example_
 ```pycon
 >>> from importloc import get_subclasses
 >>> loc = Location('app.errors')
@@ -245,26 +237,24 @@ _Example_
 ## Custom module name
 
 <!-- docsub: begin -->
-<!-- docsub: x usage section tests/test_usage.py 'N[0-9]' -->
-### Use different module name
+<!-- docsub: x cases tests/test_usage.py 'N[0-9]' -->
+## Use different module name
 
 ```python
 Location('...').load(modname='app_main')
 ```
 
-_Example_
 ```pycon
 >>> Location('app/config.py:Config').load(modname='app_main')
 <class 'app_main.Config'>
 ```
 
-### Generate module name at run time
+## Generate module name at run time
 
 ```python
 Location('...').load(modname=random_name)
 ```
 
-_Example_
 ```pycon
 >>> from importloc import random_name
 >>> Location('app/config.py:Config').load(modname=random_name)
@@ -287,14 +277,13 @@ The module name conflict can be resolved with one the methods:
 For details, see documentation on [ConflictResolution](https://importloc.readthedocs.io/en/latest/api.html#ConflictResolution).
 
 <!-- docsub: begin -->
-<!-- docsub: x usage section tests/test_usage.py 'R[0-9]' -->
-### Module name conflict raises error by default
+<!-- docsub: x cases tests/test_usage.py 'R[0-9]' -->
+## Module name conflict raises error by default
 
 ```python
 Location('...').load()
 ```
 
-_Example_
 ```pycon
 >>> Location('app/config.py:Config').load()
 <class 'config.Config'>
@@ -304,13 +293,12 @@ Traceback (most recent call last):
 importloc.exc.ModuleNameConflict: Module "config" is already imported
 ```
 
-### Reuse module that is already imported
+## Reuse module that is already imported
 
 ```python
 Location('...').load(on_conflict='reuse')
 ```
 
-_Example_
 ```pycon
 >>> C = Location('app/config.py:Config').load()
 >>> C
@@ -324,13 +312,12 @@ _Example_
 True
 ```
 
-### Reload module that is already imported
+## Reload module that is already imported
 
 ```python
 Location('...').load(on_conflict='reload')
 ```
 
-_Example_
 ```pycon
 >>> import sys
 >>> C = Location('app/config.py:Config').load()
@@ -349,13 +336,12 @@ True
 False
 ```
 
-### Replace old module with imported one
+## Replace old module with imported one
 
 ```python
 Location('...').load(on_conflict='replace')
 ```
 
-_Example_
 ```pycon
 >>> import sys
 >>> C = Location('app/config.py:Config').load()
@@ -370,13 +356,12 @@ _Example_
 False
 ```
 
-### Load module under different generated name
+## Load module under different generated name
 
 ```python
 Location('...').load(on_conflict='rename', rename=random_name)
 ```
 
-_Example_
 ```pycon
 >>> from importloc import random_name
 >>> Location('app/config.py').load()
@@ -385,13 +370,12 @@ _Example_
 <module 'u...'>
 ```
 
-### Combine override and rename
+## Combine override and rename
 
 ```python
 Location('...').load(modname='...', on_conflict='rename', rename=random_name)
 ```
 
-_Example_
 ```pycon
 >>> from importloc import random_name
 >>> Location('app/config.py').load(modname='app_config')
@@ -408,13 +392,12 @@ _Example_
 ## What if object does not exist?
 
 <!-- docsub: begin -->
-<!-- docsub: x usage section tests/test_usage.py 'O[0-9]' -->
-### Missing object causes `AttributeError`
+<!-- docsub: x cases tests/test_usage.py 'O[0-9]' -->
+## Missing object causes `AttributeError`
 
 When module was imported but requested object does not exist, `AttributeError`
 is raised.
 
-_Example_
 ```pycon
 >>> Location('app/config.py:unknown').load()
 Traceback (most recent call last):

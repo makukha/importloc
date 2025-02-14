@@ -59,7 +59,7 @@ docs = [
   "sphinx-sitemap; python_version>='3.12'",
 ]
 tests = [
-  "doctestcase>=0.1",
+  "doctestcase>=0.2",
   "pytest>=8.3; python_version>='3.12'",
 ]
 
