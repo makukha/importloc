@@ -1,25 +1,66 @@
-from dataclasses import replace
+from doctest import ELLIPSIS, FAIL_FAST
+import sys
+from typing import Tuple
+from unittest import TestCase
 
-from importloc.testing import TestCase, DirectoryLayout, File
+from doctestcase import doctestcase
+
+from importloc import Location
+from importloc.dirlay import DirectoryLayout, File
 
 
-app_layout = DirectoryLayout(
-    files=(
-        File('app/__main__.py', 'def cli(): ...'),
-        File('app/config.py', 'class Config:\n  class Nested: ...\nconf = Config()'),
-        File(
-            'app/errors.py',
-            'class Error1(Exception): ...\nclass Error2(Exception): ...',
+def app_layout() -> 'DirectoryLayout':
+    return DirectoryLayout(
+        files=(
+            File(
+                'app/__main__.py',
+                'def cli(): ...',
+            ),
+            File(
+                'app/config.py',
+                'class Config:\n  class Nested: ...\nconf = Config()',
+            ),
+            File(
+                'app/errors.py',
+                'class Error1(Exception): ...\nclass Error2(Exception): ...',
+            ),
         ),
-    ),
-)
+    )
+
+
+@doctestcase(globals={'Location': Location}, options=ELLIPSIS | FAIL_FAST)
+class DirTestCase(TestCase):
+    layout = app_layout()
+    prevmodules: Tuple[str, ...]
+
+    def setUp(self) -> None:
+        if self.__class__ is DirTestCase:
+            self.skipTest('base class')  # no tests of the base class itself
+        self.layout.create()
+        self.layout.chdir = self.__doctestcase__.kwargs.get('chdir', '.')  # type: ignore
+        self.layout.pushd()
+        sys.path.insert(0, str(self.layout.cwd))
+        # remember modules present initially
+        self.prevmodules = tuple(sys.modules.keys())
+
+    def tearDown(self) -> None:
+        sys.path.pop(0)
+        self.layout.popd()
+        self.layout.destroy()
+        # delete modules imported during the test
+        for m in tuple(sys.modules):
+            if m not in self.prevmodules:
+                del sys.modules[m]
+        self.prevmodules = ()
 
 
 # various locations
 
 
-class L1(TestCase, layout=app_layout):
-    """Import from file
+@doctestcase()
+class L1(DirTestCase):
+    """
+    Import from file
 
     ```python
     Location('app/config.py:conf').load()
@@ -33,8 +74,10 @@ class L1(TestCase, layout=app_layout):
     """
 
 
-class L2(TestCase, layout=app_layout):
-    """Import from module
+@doctestcase()
+class L2(DirTestCase):
+    """
+    Import from module
 
     ```python
     Location('app.__main__:cli').load()
@@ -48,8 +91,10 @@ class L2(TestCase, layout=app_layout):
     """
 
 
-class L3(TestCase, layout=replace(app_layout, chdir='app')):
-    """Distinguish file and module locations
+@doctestcase(chdir='app')
+class L3(DirTestCase):
+    """
+    Distinguish file and module locations
 
     ```python
     Location('./config.py:conf').load()
@@ -77,8 +122,10 @@ class L3(TestCase, layout=replace(app_layout, chdir='app')):
 # various targets
 
 
-class T1(TestCase, layout=app_layout):
-    """Import nested class
+@doctestcase()
+class T1(DirTestCase):
+    """
+    Import nested class
 
     ```python
     Location('app/config.py:Config.Nested').load()
@@ -92,8 +139,10 @@ class T1(TestCase, layout=app_layout):
     """
 
 
-class T2(TestCase, layout=app_layout):
-    """Import module as a whole
+@doctestcase()
+class T2(DirTestCase):
+    """
+    Import module as a whole
 
     ```python
     Location('app/config.py').load()
@@ -107,8 +156,10 @@ class T2(TestCase, layout=app_layout):
     """
 
 
-class T3(TestCase, layout=replace(app_layout, chdir='app')):
-    """Use `Path` object when loading module
+@doctestcase(chdir='app')
+class T3(DirTestCase):
+    """
+    Use `Path` object when loading module
 
     ```python
     Location(Path('config.py')).load()
@@ -123,8 +174,10 @@ class T3(TestCase, layout=replace(app_layout, chdir='app')):
     """
 
 
-class T4(TestCase, layout=app_layout):
-    """Import all instances of some type
+@doctestcase()
+class T4(DirTestCase):
+    """
+    Import all instances of some type
 
     ```python
     get_instances(Location('app.__main__').load(), Callable)
@@ -140,8 +193,10 @@ class T4(TestCase, layout=app_layout):
     """
 
 
-class T5(TestCase, layout=app_layout):
-    """Import all subclasses
+@doctestcase()
+class T5(DirTestCase):
+    """
+    Import all subclasses
 
     ```python
     get_subclasses(Location('app.errors').load(), Exception)
@@ -159,8 +214,10 @@ class T5(TestCase, layout=app_layout):
 # override default module name
 
 
-class N1(TestCase, layout=app_layout):
-    """Use different module name
+@doctestcase()
+class N1(DirTestCase):
+    """
+    Use different module name
 
     ```python
     Location('...').load(modname='app_main')
@@ -171,8 +228,10 @@ class N1(TestCase, layout=app_layout):
     """
 
 
-class N2(TestCase, layout=app_layout):
-    """Generate module name at run time
+@doctestcase()
+class N2(DirTestCase):
+    """
+    Generate module name at run time
 
     ```python
     Location('...').load(modname=random_name)
@@ -187,8 +246,10 @@ class N2(TestCase, layout=app_layout):
 # module name conflict resolution
 
 
-class R1(TestCase, layout=app_layout):
-    """Module name conflict raises error by default
+@doctestcase()
+class R1(DirTestCase):
+    """
+    Module name conflict raises error by default
 
     ```python
     Location('...').load()
@@ -203,8 +264,10 @@ class R1(TestCase, layout=app_layout):
     """
 
 
-class R2(TestCase, layout=app_layout):
-    """Reuse module that is already imported
+@doctestcase()
+class R2(DirTestCase):
+    """
+    Reuse module that is already imported
 
     ```python
     Location('...').load(on_conflict='reuse')
@@ -223,8 +286,10 @@ class R2(TestCase, layout=app_layout):
     """
 
 
-class R3(TestCase, layout=app_layout):
-    """Reload module that is already imported
+@doctestcase()
+class R3(DirTestCase):
+    """
+    Reload module that is already imported
 
     ```python
     Location('...').load(on_conflict='reload')
@@ -248,8 +313,10 @@ class R3(TestCase, layout=app_layout):
     """
 
 
-class R4(TestCase, layout=app_layout):
-    """Replace old module with imported one
+@doctestcase()
+class R4(DirTestCase):
+    """
+    Replace old module with imported one
 
     ```python
     Location('...').load(on_conflict='replace')
@@ -269,8 +336,10 @@ class R4(TestCase, layout=app_layout):
     """
 
 
-class R5(TestCase, layout=app_layout):
-    """Load module under different generated name
+@doctestcase()
+class R5(DirTestCase):
+    """
+    Load module under different generated name
 
     ```python
     Location('...').load(on_conflict='rename', rename=random_name)
@@ -284,8 +353,10 @@ class R5(TestCase, layout=app_layout):
     """
 
 
-class R6(TestCase, layout=app_layout):
-    """Combine override and rename
+@doctestcase()
+class R6(DirTestCase):
+    """
+    Combine override and rename
 
     ```python
     Location('...').load(modname='...', on_conflict='rename', rename=random_name)
@@ -301,8 +372,10 @@ class R6(TestCase, layout=app_layout):
     """
 
 
-class O1(TestCase, layout=app_layout):
-    """Missing object causes `AttributeError`
+@doctestcase()
+class O1(DirTestCase):
+    """
+    Missing object causes `AttributeError`
 
     When module was imported but requested object does not exist, `AttributeError`
     is raised.
