@@ -106,6 +106,7 @@ docstring-code-line-length = "dynamic"
 [tool.scriv]
 categories = ["Security ⚠️", "Breaking 🔥", "Removed 💨", "Deprecated ❄️", "Added 🌿", "Changed", "Fixed", "Docs", "Misc"]
 entry_title_template = "[{% if version %}{{ version }}](https://github.com/makukha/importloc/releases/tag/v{{ version }}) — {% endif %}{{ date.strftime('%Y-%m-%d') }}"
+ghrel_template = "command: just gh-issue-title"  # abuse config option to pass default message
 format = "md"
 fragment_directory = "NEWS.d"
 md_header_level = "2"

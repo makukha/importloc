@@ -1,7 +1,7 @@
 from doctest import ELLIPSIS, FAIL_FAST
 import sys
 from typing import Tuple
-from unittest import TestCase, skip
+from unittest import TestCase
 
 from doctestcase import doctestcase
 
@@ -28,13 +28,14 @@ def app_layout() -> 'DirectoryLayout':
     )
 
 
-@skip('base class')
 @doctestcase(globals={'Location': Location}, options=ELLIPSIS | FAIL_FAST)
 class DirTestCase(TestCase):
     layout = app_layout()
     prevmodules: Tuple[str, ...]
 
     def setUp(self) -> None:
+        if self.__class__ is DirTestCase:
+            self.skipTest('base class')  # no tests of the base class itself
         self.layout.create()
         self.layout.chdir = self.__doctestcase__.kwargs.get('chdir', '.')  # type: ignore
         self.layout.pushd()
