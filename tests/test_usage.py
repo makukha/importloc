@@ -12,8 +12,14 @@ from importloc.dirlay import DirectoryLayout, File
 def app_layout() -> 'DirectoryLayout':
     return DirectoryLayout(
         files=(
-            File('app/__main__.py', 'def cli(): ...'),
-            File('app/config.py', 'class Config:\n  class Nested: ...\nconf = Config()'),
+            File(
+                'app/__main__.py',
+                'def cli(): ...',
+            ),
+            File(
+                'app/config.py',
+                'class Config:\n  class Nested: ...\nconf = Config()',
+            ),
             File(
                 'app/errors.py',
                 'class Error1(Exception): ...\nclass Error2(Exception): ...',
