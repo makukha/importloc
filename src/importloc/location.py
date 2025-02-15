@@ -485,10 +485,14 @@ class PathLocation(Location):
 def unload(module: Union[str, ModuleType]) -> None:
     """
     Unload previously imported module. The module is not guaranteed to be garbage
-    collected (other objects might be referencing the module). This function is roughly
+    collected (other objects might be referencing it).
 
-    >>> del sys.modules[module]
-    >>> del module
+    This function roughly equals to
+
+    .. code:: python
+
+        del sys.modules[module]
+        del module
 
     Args:
         module:

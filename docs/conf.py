@@ -36,6 +36,7 @@ templates_path = ['_templates']
 add_module_names = False
 autoclass_content = 'both'
 autodoc_docstring_signature = True
+autodoc_inherit_docstrings = False
 autodoc_member_order = 'bysource'
 autodoc_typehints = 'signature'
 

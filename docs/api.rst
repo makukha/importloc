@@ -48,9 +48,9 @@ Utils
 
 .. autofunction:: getattr_nested
 
-.. autodata:: Order
-
 .. autofunction:: random_name
+
+.. autodata:: SortOrder
 
 .. autoclass:: T
 
