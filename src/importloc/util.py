@@ -1,55 +1,98 @@
 from base64 import b32encode
 import inspect
-from typing import Any, TypeVar, Union
+from typing import Any, Callable, Literal, Optional, TypeVar, Union
 from uuid import uuid4
 
 
 #: Arbitrary type.
 T = TypeVar('T', bound=type)
 
+#: Sorting order for objects returned by `get_instances` and `get_subclasses`.
+#:
+#: * ``'name'`` — default sorting order by object name.
+#:
+#: * ``'source'`` — definition order in the source code, first by full filename path,
+#:   then by numer of the first line. This sorting method uses `inspect.getsourcefile`
+#:   and `inspect.getsourcelines`, and inherits their requirements on objects and errors
+#:   raised.
+Order = Literal['name', 'source']
 
-def get_instances(obj: object, cls: type[T]) -> list[T]:
+
+def get_instances(
+    obj: object,
+    cls: type[T],
+    order: Union[Order, Optional[Callable[[T], Any]], None] = None,
+) -> list[T]:
     """
-    Get object member instances of specified type.
+    Get object members that are instances of specified type. Uses `inspect.getmembers`
+    and `isinstance`.
 
-    Uses `inspect.getmembers` and `isinstance`.
+    Args:
+        obj (`object`):
+            object to get members from.
+        cls (`type`):
+            type of members to be returned.
+        order (`Order` or `Callable`, optional):
+            sorting method (`Order`) or key function; if callable. If ``None``
+            (default), ``'name'`` sorting method is used.
 
-    >>> import app.plugins
-    >>> plugins = get_instances(app.plugins, Plugin)
+    Raises:
+        `TypeError`: or other `Exception` raised by `inspect.getfile` and
+            `inspect.getsourcelines`, if sorting ``order='source'`` is requested.
 
-    :param obj:
-        object to get members from.
+    Returns:
+        ``list[object]``:
 
-    :param cls:
-        type of members to be returned.
-
-    :return: list of object members.
+    Example:
+        >>> import app.plugins
+        >>> plugins = get_instances(app.plugins, Plugin)
     """
-    return [mem for name, mem in inspect.getmembers(obj) if isinstance(mem, cls)]
+    ret = [mem for name, mem in inspect.getmembers(obj) if isinstance(mem, cls)]
+    order_key = get_order_key_function(order)
+    if order_key:
+        ret.sort(key=order_key)
+    return ret
 
 
-def get_subclasses(obj: object, cls: type[T]) -> list[type[T]]:
+def get_subclasses(
+    obj: object,
+    cls: type[T],
+    order: Union[Order, Optional[Callable[[T], Any]], None] = None,
+) -> list[type[T]]:
     """
-    Get object member subclasses of specified class, excluding the class itself.
+    Get object members that are subclasses of specified class (excluding the class
+    itself). Uses `inspect.getmembers` and `issubclass`.
 
-    Uses `inspect.getmembers` and `issubclass`.
+    Args:
+        obj (`object`):
+            object to get members from.
+        cls (`type`):
+            base class for returned subclasses.
+        order (`Order` or `Callable`, optional):
+            sorting method (`Order`) or key function; if callable. If ``None``
+            (default), ``'name'`` sorting method is used.
 
-    >>> import app.enums
-    >>> enums = get_subclasses(app.enums, Enum)
+    Raises:
+        `TypeError`: if one of returned classes is built-in class and sorting
+            ``order='source'`` is requested.
 
-    :param obj:
-        object to get members from.
+    Returns:
+        ``list[object]``:
 
-    :param cls:
-        type of members to be returned.
-
-    :return: list of object member classes.
+    Example:
+        >>> from unittest import TestCase
+        >>> from tests import test_usage
+        >>> cases = get_subclasses(test_usage, TestCase, order='source')
     """
-    return [
+    ret = [
         m
         for name, m in inspect.getmembers(obj)
         if isinstance(m, type) and issubclass(m, cls) and m is not cls
     ]
+    order_key = get_order_key_function(order)
+    if order_key:
+        ret.sort(key=order_key)
+    return ret
 
 
 def getattr_nested(
@@ -58,32 +101,34 @@ def getattr_nested(
     default: Union[type[Exception], Any] = AttributeError,
 ) -> object:
     """
-    Get nested attribute value.
+    Get nested attribute value. If attribute chain does not exist, raise exception
+    or return default value.
 
-    If attribute chain does not exist, raise exception or return default value.
+    Args:
+        obj (`object`):
+            object to get attribute value from.
 
-    >>> from app import config
-    >>> options = getattr_nested(config, f'{config.primary}.options')
-    >>> missing = getattr_nested(config, 'does.not.exist', None)
+        name (`str`):
+            dot-separated nested attribute name.
 
-    :param obj:
-        object to get attribute from.
+        default (`Exception` | `Any`):
+            raise exception if ``default`` is an `Exception` type (`AttributeError` by
+            default); otherwise return ``default`` value.
 
-    :param name:
-        dot-separated nested attribute name.
+    Raises:
+        `AttributeError`:
+            when nested attribute chain does not exist and ``default`` was not adjusted.
+        `Exception`:
+            when custom `Exception` passed as ``default``.
 
-    :param default:
-        raise exception if ``default`` is an `Exception` type (`AttributeError` by
-        default); otherwise return ``default`` value.
-
-    :raises AttributeError:
-        when nested attribute chain does not exist and ``default`` was not adjusted.
-    :raises Exception:
-        when custom `Exception` passed as ``default``.
-
-    :return:
+    Returns:
         nested attribute value or ``default`` value, if specified and not an
         `Exception` subclass.
+
+    Example:
+        >>> from app import config
+        >>> options = getattr_nested(config, f'{config.primary}.options')
+        >>> missing = getattr_nested(config, 'does.not.exist', None)
     """
     current = obj
     for part in name.split('.'):
@@ -103,8 +148,23 @@ def random_name(*args: Any, **kwargs: Any) -> str:
 
     All arguments passed to this function will be ignored.
 
-    >>> random_name()
-    'ufoh3xjrrozfcvfheyktg62pzia'
+    Example:
+        >>> random_name()
+        'ufoh3xjrrozfcvfheyktg62pzia'
     """
     rand = b32encode(uuid4().bytes).decode('ascii').replace('=', '').lower()
     return f'u{rand}'
+
+
+# undocumented helpers
+
+
+def get_order_key_function(
+    order: Union[Order, Callable[[Any], Any], None],
+) -> Optional[Callable[[Any], Any]]:
+    if order is None or order == 'name':
+        return None
+    elif order == 'source':
+        return lambda o: (inspect.getsourcefile(o), inspect.getsourcelines(o)[1])
+    else:
+        return order
