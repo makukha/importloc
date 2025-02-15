@@ -55,6 +55,7 @@ docs = [
   "furo; python_version>='3.12'",
   "myst-parser; python_version>='3.12'",
   "sphinx; python_version>='3.12'",
+  "sphinx-copybutton>=0.3 ; python_version >= '3.12'",
   "sphinx-design; python_version>='3.12'",
   "sphinx-sitemap; python_version>='3.12'",
 ]
