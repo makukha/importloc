@@ -40,5 +40,18 @@ Exceptions
 Utils
 -----
 
-.. automodule:: importloc.util
+.. currentmodule:: importloc.util
+
+.. autofunction:: get_instances
+
+.. autofunction:: get_subclasses
+
+.. autofunction:: getattr_nested
+
+.. autofunction:: random_name
+
+.. autoclass:: OrderBy
     :members:
+
+.. autoclass:: T
+

@@ -8,12 +8,13 @@ default:
     @just --list
 
 # initialize dev environment
-[group('initialize')]
-[macos]
+[group('initialize'), macos]
 init:
     sudo port install gh git uv yq
-    just pre-commit-init
+    just init-hooks
     just sync
+
+# develop
 
 # synchronize dev environment
 [group('initialize')]
@@ -26,14 +27,12 @@ sync:
 upgrade:
     uv sync --all-extras --all-groups --upgrade
 
-# develop
-
 # run linters
 [group('develop')]
 lint:
     uv run mypy .
     uv run ruff check
-    uv run ruff format --check
+    uv run ruff format --diff
 
 # run tests
 [group('develop')]
