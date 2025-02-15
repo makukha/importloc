@@ -32,7 +32,7 @@ upgrade:
 lint:
     uv run mypy .
     uv run ruff check
-    uv run ruff format --check
+    uv run ruff format --diff
 
 # run tests
 [group('develop')]
