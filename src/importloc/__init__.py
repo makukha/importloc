@@ -1,5 +1,5 @@
 from .exc import InvalidLocation, ModuleNameConflict
-from .location import ConflictResolution, Location, ModuleLocation, PathLocation
+from .location import ConflictResolution, Location, ModuleLocation, PathLocation, unload
 from .util import (
     get_instances,
     get_subclasses,
@@ -22,4 +22,5 @@ __all__ = [
     'get_subclasses',
     'getattr_nested',
     'random_name',
+    'unload',
 ]

@@ -482,6 +482,27 @@ class PathLocation(Location):
             return '<{} {!r} obj={!r}>'.format(cls, str(self.path), self.obj)
 
 
+def unload(module: Union[str, ModuleType]) -> None:
+    """
+    Unload previously imported module. The module is not guaranteed to be garbage
+    collected (other objects might be referencing the module). This function is roughly
+
+    >>> del sys.modules[module]
+    >>> del module
+
+    Args:
+        module:
+            imported module name or module object to be deleted.
+
+    Raises:
+        KeyError: when there is no imported module with given name.
+    """
+    modname = module.__name__ if isinstance(module, ModuleType) else module
+    modobj = module if isinstance(module, ModuleType) else sys.modules[module]
+    del sys.modules[modname]
+    del modobj
+
+
 # undocumented helpers
 
 
