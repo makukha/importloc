@@ -1,40 +1,49 @@
 from base64 import b32encode
+from enum import Enum
 import inspect
-from typing import Any, Callable, Literal, Optional, TypeVar, Union
+from typing import Any, Callable, Optional, TypeVar, Union
 from uuid import uuid4
 
 
 #: Arbitrary type.
 T = TypeVar('T', bound=object)
 
-#: Sorting order for objects returned by `get_instances` and `get_subclasses`.
-#:
-#: * ``'name'`` — default sorting order by object name.
-#:
-#: * ``'source'`` — definition order in the source code, first by full filename path,
-#:   then by numer of the first line. This sorting method uses `inspect.getsourcefile`
-#:   and `inspect.getsourcelines`, and inherits their requirements on objects and errors
-#:   raised.
-#: * `Callable[[object], Any]` — function returning sorting key.
-SortOrder = Union[Literal['name', 'source'], Callable[[object], Any]]
+
+class OrderBy(str, Enum):
+    """
+    Objects sorting method.
+    """
+
+    #: Order by object name.
+    NAME = 'name'
+
+    #: Order by definition order in the source file, first by source filename path,
+    #: then by first line number. This sorting method uses `inspect.getsourcefile`
+    #: and `inspect.getsourcelines`, and inherits their requirements on objects
+    #: and exceptions raised.
+    SOURCE = 'source'
 
 
-def get_instances(obj: object, cls: type[T], order: SortOrder = 'name') -> list[T]:
+def get_instances(
+    obj: object,
+    cls: type[T],
+    order: Union[OrderBy, str, Callable[[T], Any]] = 'name',
+) -> list[T]:
     """
     Get object members that are instances of specified type. Uses `inspect.getmembers`
     and `isinstance`.
 
     Args:
-        obj (`object`):
+        obj (``object``):
             object to get members from.
-        cls (`type`):
+        cls (``type``):
             type of members to be returned.
-        order (`SortOrder`):
+        order (`OrderBy` | ``str`` | ``Callable[[T], Any]``):
             sorting method or sort key function; defaults to ``'name'``.
 
     Raises:
         `TypeError`: or other `Exception` raised by `inspect.getfile` and
-            `inspect.getsourcelines`, if sorting ``order='source'`` is requested.
+            `inspect.getsourcelines` when sorting ``order='source'``.
 
     Returns:
         ``list[object]``:
@@ -51,7 +60,9 @@ def get_instances(obj: object, cls: type[T], order: SortOrder = 'name') -> list[
 
 
 def get_subclasses(
-    obj: object, cls: type[T], order: SortOrder = 'name'
+    obj: object,
+    cls: type[T],
+    order: Union[OrderBy, str, Callable[[T], Any]] = 'name',
 ) -> list[type[T]]:
     """
     Get object members that are subclasses of specified class (excluding the class
@@ -62,12 +73,12 @@ def get_subclasses(
             object to get members from.
         cls (`type`):
             base class for returned subclasses.
-        order (`SortOrder`):
+        order (`OrderBy` | ``str`` | ``Callable[[T], Any]``):
             sorting method or sort key function; defaults to ``'name'``.
 
     Raises:
-        `TypeError`: if one of returned classes is built-in class and sorting
-            ``order='source'`` is requested.
+        `TypeError`: or other `Exception` raised by `inspect.getfile` and
+            `inspect.getsourcelines` when sorting ``order='source'``.
 
     Returns:
         ``list[object]``:
@@ -152,10 +163,14 @@ def random_name(*args: Any, **kwargs: Any) -> str:
 # undocumented helpers
 
 
-def get_sort_key_func(order: SortOrder) -> Optional[Callable[[Any], Any]]:
+def get_sort_key_func(
+    order: Union[OrderBy, str, Callable[[T], Any]],
+) -> Optional[Callable[[Any], Any]]:
     if order == 'name':
         return None
     elif order == 'source':
         return lambda o: (inspect.getsourcefile(o), inspect.getsourcelines(o)[1])
-    else:
+    elif callable(order):
         return order
+    else:
+        raise TypeError('Unexpected order type {}'.format(type(order)))

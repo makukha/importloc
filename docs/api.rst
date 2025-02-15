@@ -50,7 +50,8 @@ Utils
 
 .. autofunction:: random_name
 
-.. autodata:: SortOrder
+.. autoclass:: OrderBy
+    :members:
 
 .. autoclass:: T
 

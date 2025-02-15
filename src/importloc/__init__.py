@@ -1,6 +1,7 @@
 from .exc import InvalidLocation, ModuleNameConflict
 from .location import ConflictResolution, Location, ModuleLocation, PathLocation, unload
 from .util import (
+    OrderBy,
     get_instances,
     get_subclasses,
     getattr_nested,
@@ -17,6 +18,7 @@ __all__ = [
     'Location',
     'ModuleNameConflict',
     'ModuleLocation',
+    'OrderBy',
     'PathLocation',
     'get_instances',
     'get_subclasses',
