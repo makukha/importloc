@@ -5,7 +5,7 @@ from uuid import uuid4
 
 
 #: Arbitrary type.
-T = TypeVar('T', bound=type)
+T = TypeVar('T', bound=object)
 
 #: Sorting order for objects returned by `get_instances` and `get_subclasses`.
 #:
@@ -15,14 +15,11 @@ T = TypeVar('T', bound=type)
 #:   then by numer of the first line. This sorting method uses `inspect.getsourcefile`
 #:   and `inspect.getsourcelines`, and inherits their requirements on objects and errors
 #:   raised.
-Order = Literal['name', 'source']
+#: * `Callable[[object], Any]` — function returning sorting key.
+SortOrder = Union[Literal['name', 'source'], Callable[[object], Any]]
 
 
-def get_instances(
-    obj: object,
-    cls: type[T],
-    order: Union[Order, Optional[Callable[[T], Any]], None] = None,
-) -> list[T]:
+def get_instances(obj: object, cls: type[T], order: SortOrder = 'name') -> list[T]:
     """
     Get object members that are instances of specified type. Uses `inspect.getmembers`
     and `isinstance`.
@@ -32,9 +29,8 @@ def get_instances(
             object to get members from.
         cls (`type`):
             type of members to be returned.
-        order (`Order` or `Callable`, optional):
-            sorting method (`Order`) or key function; if callable. If ``None``
-            (default), ``'name'`` sorting method is used.
+        order (`SortOrder`):
+            sorting method or sort key function; defaults to ``'name'``.
 
     Raises:
         `TypeError`: or other `Exception` raised by `inspect.getfile` and
@@ -48,16 +44,14 @@ def get_instances(
         >>> plugins = get_instances(app.plugins, Plugin)
     """
     ret = [mem for name, mem in inspect.getmembers(obj) if isinstance(mem, cls)]
-    order_key = get_order_key_function(order)
+    order_key = get_sort_key_func(order)
     if order_key:
         ret.sort(key=order_key)
     return ret
 
 
 def get_subclasses(
-    obj: object,
-    cls: type[T],
-    order: Union[Order, Optional[Callable[[T], Any]], None] = None,
+    obj: object, cls: type[T], order: SortOrder = 'name'
 ) -> list[type[T]]:
     """
     Get object members that are subclasses of specified class (excluding the class
@@ -68,9 +62,8 @@ def get_subclasses(
             object to get members from.
         cls (`type`):
             base class for returned subclasses.
-        order (`Order` or `Callable`, optional):
-            sorting method (`Order`) or key function; if callable. If ``None``
-            (default), ``'name'`` sorting method is used.
+        order (`SortOrder`):
+            sorting method or sort key function; defaults to ``'name'``.
 
     Raises:
         `TypeError`: if one of returned classes is built-in class and sorting
@@ -89,7 +82,7 @@ def get_subclasses(
         for name, m in inspect.getmembers(obj)
         if isinstance(m, type) and issubclass(m, cls) and m is not cls
     ]
-    order_key = get_order_key_function(order)
+    order_key = get_sort_key_func(order)
     if order_key:
         ret.sort(key=order_key)
     return ret
@@ -159,10 +152,8 @@ def random_name(*args: Any, **kwargs: Any) -> str:
 # undocumented helpers
 
 
-def get_order_key_function(
-    order: Union[Order, Callable[[Any], Any], None],
-) -> Optional[Callable[[Any], Any]]:
-    if order is None or order == 'name':
+def get_sort_key_func(order: SortOrder) -> Optional[Callable[[Any], Any]]:
+    if order == 'name':
         return None
     elif order == 'source':
         return lambda o: (inspect.getsourcefile(o), inspect.getsourcelines(o)[1])
